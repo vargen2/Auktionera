@@ -1,6 +1,7 @@
 package se.iths.auktionera.business.model;
 
 import lombok.*;
+import se.iths.auktionera.persistence.entity.AuctionEntity;
 
 @Getter
 @Setter
@@ -11,6 +12,7 @@ public class Auction {
 
     private long id;
     //"tags" : ["string"],
+    private String title;
     private String description;
     private User seller;
 //            "buyer" : User,
@@ -26,4 +28,12 @@ public class Auction {
 //            "minBidStep" : 0,
 //            "currentBid" : 0,
 //            "deliveryType" : enum:DeliveryType
+
+
+    public Auction(AuctionEntity auctionEntity) {
+        this.title = auctionEntity.getTitle();
+        this.description = auctionEntity.getDescription();
+        this.id = auctionEntity.getId();
+        this.seller = new User(auctionEntity.getSeller());
+    }
 }

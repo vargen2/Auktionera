@@ -15,18 +15,8 @@ public class Account {
     private Address address;
 
     public Account(AccountEntity ent) {
-        this.address = Address.builder()
-                .streetName(ent.getStreetName())
-                .postNr(ent.getPostNr())
-                .city(ent.getCity())
-                .build();
-
-        this.user = User.builder()
-                .id(ent.getId())
-                .userName(ent.getUserName())
-                .createdAt(ent.getCreatedAt())
-                .build();
-
+        this.address = new Address(ent);
+        this.user = new User(ent);
         this.email = ent.getEmail();
         this.anonymousBuyer = ent.isAnonymousBuyer();
     }

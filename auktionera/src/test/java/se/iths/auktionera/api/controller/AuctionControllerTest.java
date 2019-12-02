@@ -70,7 +70,7 @@ class AuctionControllerTest {
         User seller = User.builder().id(1).userName("testName").build();
         Auction auction = Auction.builder().id(1000).seller(seller).description("En bra stol").build();
 
-        CreateAuctionRequest en_bra_stol = CreateAuctionRequest.builder().description("En bra stol").build();
+        CreateAuctionRequest en_bra_stol = CreateAuctionRequest.builder().title("Stol").description("En bra stol").build();
         ObjectWriter objectWriter = mapper.writerFor(CreateAuctionRequest.class);
         String json = objectWriter.writeValueAsString(en_bra_stol);
 

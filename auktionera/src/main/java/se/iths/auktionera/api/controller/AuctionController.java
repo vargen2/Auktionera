@@ -32,7 +32,6 @@ public class AuctionController {
 
     @PostMapping("api/auctions")
     public Auction createAuction(@Valid @RequestBody CreateAuctionRequest auctionRequest, HttpServletRequest request) {
-
         return auctionService.createAuction((String) request.getAttribute("authId"), auctionRequest);
     }
 }

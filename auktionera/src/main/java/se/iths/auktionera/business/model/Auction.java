@@ -1,7 +1,10 @@
 package se.iths.auktionera.business.model;
 
 import lombok.*;
+import se.iths.auktionera.business.enums.AuctionState;
 import se.iths.auktionera.persistence.entity.AuctionEntity;
+
+import java.time.Instant;
 
 @Getter
 @Setter
@@ -15,18 +18,18 @@ public class Auction {
     private String title;
     private String description;
     private User seller;
-//            "buyer" : User,
+    //            "buyer" : User,
 //            "sellerReview" : Review,
 //            "buyerReview" : Review,
-//            "state" : enum:AuctionState,
-//            "endsAt" : Date,
-//            "createdAt" : Date,
-//            "currentBidAt" : Date,
-//            "endedAt" : Date,
-//            "startPrice" : 0,
-//            "buyoutPrice" : 0,
-//            "minBidStep" : 0,
-//            "currentBid" : 0,
+    private AuctionState state;
+    private Instant endsAt;
+    private Instant createdAt;
+    private Instant currentBidAt;
+    private Instant endedAt;
+    private int startPrice;
+    private int buyoutPrice;
+    private int minBidStep;
+    private int currentBid;
 //            "deliveryType" : enum:DeliveryType
 
 
@@ -35,5 +38,13 @@ public class Auction {
         this.description = auctionEntity.getDescription();
         this.id = auctionEntity.getId();
         this.seller = new User(auctionEntity.getSeller());
+        this.createdAt = auctionEntity.getCreatedAt();
+        this.buyoutPrice = auctionEntity.getBuyoutPrice();
+        this.startPrice = auctionEntity.getStartPrice();
+        this.minBidStep = auctionEntity.getMinBidStep();
+        this.endsAt = auctionEntity.getEndsAt();
+        this.state = auctionEntity.getState();
+        this.currentBid = auctionEntity.getCurrentBid();
+        this.currentBidAt = auctionEntity.getCurrentBidAt();
     }
 }

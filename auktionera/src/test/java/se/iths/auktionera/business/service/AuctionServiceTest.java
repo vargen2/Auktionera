@@ -12,6 +12,7 @@ import se.iths.auktionera.persistence.repo.AccountRepo;
 import se.iths.auktionera.persistence.repo.AuctionRepo;
 
 import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Optional;
 
@@ -47,7 +48,16 @@ class AuctionServiceTest {
                 .createdAt(Instant.now())
                 .build();
 
-        auctionEntity = AuctionEntity.builder().id(1000).title("Stol").description("En bra stol").seller(accountEntity).build();
+        auctionEntity = AuctionEntity.builder()
+                .id(1000)
+                .title("Stol")
+                .description("En bra stol")
+                .buyoutPrice(20000)
+                .startPrice(100)
+                .minBidStep(100)
+                .endsAt(Instant.now().plus(1, ChronoUnit.DAYS))
+                .seller(accountEntity)
+                .build();
     }
 
     @Test
@@ -72,11 +82,24 @@ class AuctionServiceTest {
     void createAuction() {
         when(accountRepo.findByAuthId("User")).thenReturn(accountEntity);
         when(auctionRepo.saveAndFlush(any(AuctionEntity.class))).thenReturn(auctionEntity);
-        CreateAuctionRequest auctionRequest = CreateAuctionRequest.builder().title(auctionEntity.getTitle()).description(auctionEntity.getDescription()).build();
+        CreateAuctionRequest auctionRequest = CreateAuctionRequest.builder()
+                .title(auctionEntity.getTitle())
+                .description(auctionEntity.getDescription())
+                .buyoutPrice(auctionEntity.getBuyoutPrice())
+                .endsAt(auctionEntity.getEndsAt())
+                .minBidStep(auctionEntity.getMinBidStep())
+                .startPrice(auctionEntity.getStartPrice())
+                .build();
         Auction auction = auctionService.createAuction("User", auctionRequest);
         assertNotNull(auction);
 
         assertEquals(auctionEntity.getTitle(), auction.getTitle());
+        assertEquals(auctionEntity.getDescription(), auction.getDescription());
+        assertEquals(auctionEntity.getBuyoutPrice(), auction.getBuyoutPrice());
+        assertEquals(auctionEntity.getEndsAt(), auction.getEndsAt());
+        assertEquals(auctionEntity.getCreatedAt(), auction.getCreatedAt());
+        assertEquals(auctionEntity.getStartPrice(), auction.getStartPrice());
+        assertEquals(auctionEntity.getMinBidStep(), auction.getMinBidStep());
         assertEquals(auctionEntity.getSeller().getUserName(), auction.getSeller().getUserName());
     }
     /*

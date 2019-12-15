@@ -13,10 +13,10 @@ public class AuthFilter implements Filter {
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         HttpServletRequest httpServletRequest = (HttpServletRequest) servletRequest;
         Principal userPrincipal = httpServletRequest.getUserPrincipal();
-        if (userPrincipal==null) {
-            httpServletRequest.setAttribute("authId","TestUser");
-        }else {
-           httpServletRequest.setAttribute("authId",userPrincipal.getName());
+        if (userPrincipal == null) {
+            httpServletRequest.setAttribute("authId", "TestUser");
+        } else {
+            httpServletRequest.setAttribute("authId", userPrincipal.getName());
         }
         filterChain.doFilter(servletRequest, servletResponse);
     }

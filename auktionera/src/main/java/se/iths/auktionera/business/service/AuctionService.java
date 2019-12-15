@@ -35,11 +35,9 @@ public class AuctionService implements IAuctionService {
 
     @Override
     public Auction createAuction(String authId, CreateAuctionRequest auctionRequest) {
-        AuctionEntity auctionEntity = AuctionEntity.builder()
-                .description(auctionRequest.getDescription())
-                .title(auctionRequest.getTitle())
-                .seller(Objects.requireNonNull(accountRepo.findByAuthId(authId)))
-                .build();
+        var seller = Objects.requireNonNull(accountRepo.findByAuthId(authId));
+        var auctionEntity = new AuctionEntity(auctionRequest, seller);
+
         return new Auction(auctionRepo.saveAndFlush(auctionEntity));
     }
 }

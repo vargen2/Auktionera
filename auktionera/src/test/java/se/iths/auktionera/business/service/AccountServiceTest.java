@@ -5,14 +5,15 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import se.iths.auktionera.business.model.Account;
-import se.iths.auktionera.business.model.AccountRequest;
+import se.iths.auktionera.business.model.UpdateAccountRequest;
 import se.iths.auktionera.persistence.entity.AccountEntity;
 import se.iths.auktionera.persistence.repo.AccountRepo;
 
 import java.time.Instant;
 import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
@@ -62,10 +63,10 @@ class AccountServiceTest {
         when(accountRepo.findByAuthId("User")).thenReturn(accountEntity);
         when(accountRepo.saveAndFlush(any(AccountEntity.class))).thenReturn(accountEntity);
 
-        AccountRequest accountRequest = new AccountRequest();
-        accountRequest.setUserName("NewName");
+        UpdateAccountRequest updateAccountRequest = new UpdateAccountRequest();
+        updateAccountRequest.setUserName("NewName");
         Map<String, String> fields = Map.of("userName", "NewName");
-        Account account = accountService.updateAccount("User", accountRequest);
+        Account account = accountService.updateAccount("User", updateAccountRequest);
         assertNotNull(account);
         assertEquals(fields.get("userName"), account.getUser().getUserName());
     }

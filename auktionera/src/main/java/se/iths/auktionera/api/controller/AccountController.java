@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import se.iths.auktionera.business.model.Account;
-import se.iths.auktionera.business.model.AccountRequest;
+import se.iths.auktionera.business.model.UpdateAccountRequest;
 import se.iths.auktionera.business.service.IAccountService;
 
 import javax.servlet.http.HttpServletRequest;
@@ -26,7 +26,7 @@ public class AccountController {
     }
 
     @PatchMapping("api/account")
-    public Account updateAccount(@Valid @RequestBody AccountRequest fields, HttpServletRequest request) {
+    public Account updateAccount(@Valid @RequestBody UpdateAccountRequest fields, HttpServletRequest request) {
         return accountService.updateAccount((String) request.getAttribute("authId"), fields);
     }
 }

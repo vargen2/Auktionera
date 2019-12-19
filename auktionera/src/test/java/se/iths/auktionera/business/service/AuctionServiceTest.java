@@ -54,7 +54,6 @@ class AuctionServiceTest {
                 .description("En bra stol")
                 .buyoutPrice(20000)
                 .startPrice(100)
-                .minBidStep(100)
                 .endsAt(Instant.now().plus(1, ChronoUnit.DAYS))
                 .seller(accountEntity)
                 .build();
@@ -87,7 +86,6 @@ class AuctionServiceTest {
                 .description(auctionEntity.getDescription())
                 .buyoutPrice(auctionEntity.getBuyoutPrice())
                 .endsAt(auctionEntity.getEndsAt())
-                .minBidStep(auctionEntity.getMinBidStep())
                 .startPrice(auctionEntity.getStartPrice())
                 .build();
         Auction auction = auctionService.createAuction("User", auctionRequest);
@@ -99,17 +97,7 @@ class AuctionServiceTest {
         assertEquals(auctionEntity.getEndsAt(), auction.getEndsAt());
         assertEquals(auctionEntity.getCreatedAt(), auction.getCreatedAt());
         assertEquals(auctionEntity.getStartPrice(), auction.getStartPrice());
-        assertEquals(auctionEntity.getMinBidStep(), auction.getMinBidStep());
         assertEquals(auctionEntity.getSeller().getUserName(), auction.getSeller().getUserName());
     }
-    /*
-    AuctionEntity auctionEntity = AuctionEntity.builder()
-                .description(auctionRequest.getDescription())
-                .title(auctionRequest.getTitle())
-                .seller(Objects.requireNonNull(accountRepo.findByAuthId(authId)))
-                .build();
-        return new Auction(auctionRepo.saveAndFlush(auctionEntity));
-     */
-
 
 }

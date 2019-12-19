@@ -15,6 +15,8 @@ import se.iths.auktionera.business.model.CreateAuctionRequest;
 import se.iths.auktionera.business.model.User;
 import se.iths.auktionera.business.service.IAuctionService;
 
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -70,7 +72,12 @@ class AuctionControllerTest {
         User seller = User.builder().id(1).userName("testName").build();
         Auction auction = Auction.builder().id(1000).seller(seller).description("En bra stol").build();
 
-        CreateAuctionRequest en_bra_stol = CreateAuctionRequest.builder().title("Stol").description("En bra stol").build();
+        CreateAuctionRequest en_bra_stol = CreateAuctionRequest.builder()
+                .title("Stol")
+                .description("En bra stol")
+                .startPrice(100)
+                .endsAt(Instant.now().plus(1, ChronoUnit.DAYS))
+                .build();
         ObjectWriter objectWriter = mapper.writerFor(CreateAuctionRequest.class);
         String json = objectWriter.writeValueAsString(en_bra_stol);
 

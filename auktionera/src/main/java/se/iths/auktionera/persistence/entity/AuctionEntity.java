@@ -42,7 +42,6 @@ public class AuctionEntity {
     private Instant endedAt;
     private int startPrice;
     private int buyoutPrice;
-    private int minBidStep;
     private int currentBid;
 
     public AuctionEntity(CreateAuctionRequest request, AccountEntity seller) {
@@ -53,7 +52,6 @@ public class AuctionEntity {
         this.endsAt = request.getEndsAt();
         this.startPrice = request.getStartPrice();
         Optional.ofNullable(request.getBuyoutPrice()).ifPresent(this::setBuyoutPrice);
-        this.minBidStep = request.getMinBidStep();
         this.title = request.getTitle();
         this.description = request.getDescription();
 
@@ -61,7 +59,6 @@ public class AuctionEntity {
             Validate.isTrue(buyoutPrice > startPrice, "Not valid buyout");
         }
         Validate.isTrue(endsAt.isAfter(createdAt.plus(4, ChronoUnit.HOURS)), "Not valid end date, minimum 4 hours.");
-        Validate.isTrue(minBidStep >= 10, "Not valid bid step");
 
     }
 }

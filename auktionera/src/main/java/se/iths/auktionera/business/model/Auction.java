@@ -28,7 +28,6 @@ public class Auction {
     private Instant endedAt;
     private int startPrice;
     private int buyoutPrice;
-    private int minBidStep;
     private int currentBid;
 //            "deliveryType" : enum:DeliveryType
 
@@ -41,7 +40,6 @@ public class Auction {
         this.createdAt = auctionEntity.getCreatedAt();
         this.buyoutPrice = auctionEntity.getBuyoutPrice();
         this.startPrice = auctionEntity.getStartPrice();
-        this.minBidStep = auctionEntity.getMinBidStep();
         this.endsAt = auctionEntity.getEndsAt();
         this.state = auctionEntity.getState();
         this.currentBid = auctionEntity.getCurrentBid();

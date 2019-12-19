@@ -4,8 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.validator.constraints.Length;
 
-import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -21,7 +21,7 @@ public class CreateAuctionRequest {
     private String description;
 
     @NotBlank
-    @Max(255)
+    @Length(max = 255, min = 1)
     private String title;
 
     @NotNull
@@ -32,11 +32,6 @@ public class CreateAuctionRequest {
     private Integer startPrice;
 
     @Min(0)
-    private Integer buyoutPrice;
-
-    @NotNull
-    @Min(10)
-    private Integer minBidStep;
-
+    private Integer buyoutPrice = null;
 
 }

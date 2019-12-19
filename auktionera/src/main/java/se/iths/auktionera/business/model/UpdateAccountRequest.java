@@ -9,7 +9,7 @@ import javax.validation.constraints.Email;
 
 @Getter
 @NoArgsConstructor
-public class AccountRequest {
+public class UpdateAccountRequest {
 
     private String userName = null;
 

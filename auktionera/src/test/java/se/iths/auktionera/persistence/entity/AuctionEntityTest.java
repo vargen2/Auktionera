@@ -27,7 +27,6 @@ class AuctionEntityTest {
                 .description("En bra stol")
                 .buyoutPrice(1000)
                 .startPrice(100)
-                .minBidStep(50)
                 .endsAt(Instant.now().plus(1, ChronoUnit.DAYS))
                 .build();
 
@@ -42,7 +41,6 @@ class AuctionEntityTest {
                 .title("En stol")
                 .description("En bra stol")
                 .startPrice(100)
-                .minBidStep(50)
                 .endsAt(Instant.now().plus(1, ChronoUnit.DAYS))
                 .build();
 
@@ -58,7 +56,6 @@ class AuctionEntityTest {
                 .description("En bra stol")
                 .buyoutPrice(0)
                 .startPrice(100)
-                .minBidStep(50)
                 .endsAt(Instant.now().plus(1, ChronoUnit.DAYS))
                 .build();
 
@@ -74,7 +71,6 @@ class AuctionEntityTest {
                 .description("En bra stol")
                 .buyoutPrice(1000)
                 .startPrice(100)
-                .minBidStep(50)
                 .endsAt(Instant.now().plus(1, ChronoUnit.HOURS))
                 .build();
 
@@ -90,7 +86,6 @@ class AuctionEntityTest {
                 .description("En bra stol")
                 .buyoutPrice(50)
                 .startPrice(100)
-                .minBidStep(50)
                 .endsAt(Instant.now().plus(1, ChronoUnit.HOURS))
                 .build();
 

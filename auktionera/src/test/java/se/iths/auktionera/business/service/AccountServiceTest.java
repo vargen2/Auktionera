@@ -11,6 +11,7 @@ import se.iths.auktionera.persistence.repo.AccountRepo;
 
 import java.time.Instant;
 import java.util.Map;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -44,7 +45,7 @@ class AccountServiceTest {
 
     @Test
     void getAccount() {
-        when(accountRepo.findByAuthId("User")).thenReturn(accountEntity);
+        when(accountRepo.findByAuthId("User")).thenReturn(Optional.of(accountEntity));
         Account account = accountService.getAccount("User");
         assertNotNull(account);
         assertEquals(accountEntity.getUserName(), account.getUser().getUserName());
@@ -52,7 +53,7 @@ class AccountServiceTest {
 
     @Test
     void getAccountFirstSignIn() {
-        when(accountRepo.findByAuthId("User")).thenReturn(null);
+        when(accountRepo.findByAuthId("User")).thenReturn(Optional.empty());
         when(accountRepo.saveAndFlush(any(AccountEntity.class))).thenReturn(AccountEntity.builder().authId("User").createdAt(Instant.now()).build());
         Account account = accountService.getAccount("User");
         assertNotNull(account);
@@ -60,7 +61,7 @@ class AccountServiceTest {
 
     @Test
     void updateAccountUserName() {
-        when(accountRepo.findByAuthId("User")).thenReturn(accountEntity);
+        when(accountRepo.findByAuthId("User")).thenReturn(Optional.of(accountEntity));
         when(accountRepo.saveAndFlush(any(AccountEntity.class))).thenReturn(accountEntity);
 
         UpdateAccountRequest updateAccountRequest = new UpdateAccountRequest();

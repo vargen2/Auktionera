@@ -10,6 +10,7 @@ import se.iths.auktionera.persistence.entity.AccountEntity;
 import se.iths.auktionera.persistence.entity.AuctionEntity;
 import se.iths.auktionera.persistence.repo.AccountRepo;
 import se.iths.auktionera.persistence.repo.AuctionRepo;
+import se.iths.auktionera.persistence.repo.BidRepo;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -28,6 +29,8 @@ class AuctionServiceTest {
     AccountRepo accountRepo;
     @MockBean
     AuctionRepo auctionRepo;
+    @MockBean
+    BidRepo bidRepo;
 
     private IAuctionService auctionService;
     private AccountEntity accountEntity;
@@ -35,7 +38,7 @@ class AuctionServiceTest {
 
     @BeforeEach
     void setUp() {
-        auctionService = new AuctionService(accountRepo, auctionRepo);
+        auctionService = new AuctionService(accountRepo, auctionRepo, bidRepo);
         accountEntity = AccountEntity.builder()
                 .id(10)
                 .anonymousBuyer(false)
@@ -79,7 +82,7 @@ class AuctionServiceTest {
 
     @Test
     void createAuction() {
-        when(accountRepo.findByAuthId("User")).thenReturn(accountEntity);
+        when(accountRepo.findByAuthId("User")).thenReturn(Optional.of(accountEntity));
         when(auctionRepo.saveAndFlush(any(AuctionEntity.class))).thenReturn(auctionEntity);
         CreateAuctionRequest auctionRequest = CreateAuctionRequest.builder()
                 .title(auctionEntity.getTitle())

@@ -12,6 +12,7 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import se.iths.auktionera.business.model.Auction;
 import se.iths.auktionera.business.model.CreateAuctionRequest;
+import se.iths.auktionera.business.model.CreateBidRequest;
 import se.iths.auktionera.business.model.User;
 import se.iths.auktionera.business.service.IAuctionService;
 
@@ -83,6 +84,23 @@ class AuctionControllerTest {
 
         when(auctionService.createAuction(anyString(), any())).thenReturn(auction);
         mvc.perform(post("/api/auctions").with(csrf()).characterEncoding("utf-8").contentType(MediaType.APPLICATION_JSON).content(json).accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().json("{'seller':{'userName':'testName'}}"))
+                .andExpect(content().json("{'description':'En bra stol'}"));
+
+    }
+
+    @Test
+    void createBid(@Autowired MockMvc mvc) throws Exception {
+        User seller = User.builder().id(1).userName("testName").build();
+        Auction auction = Auction.builder().id(1000).seller(seller).description("En bra stol").build();
+
+        CreateBidRequest bidRequest = CreateBidRequest.builder().auctionId(1000).currentPrice(100).bidPrice(500).build();
+        ObjectWriter objectWriter = mapper.writerFor(CreateBidRequest.class);
+        String json = objectWriter.writeValueAsString(bidRequest);
+
+        when(auctionService.createBid(anyString(), any())).thenReturn(auction);
+        mvc.perform(post("/api/auctions/1000/bid").with(csrf()).characterEncoding("utf-8").contentType(MediaType.APPLICATION_JSON).content(json).accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().json("{'seller':{'userName':'testName'}}"))
                 .andExpect(content().json("{'description':'En bra stol'}"));

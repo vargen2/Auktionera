@@ -3,6 +3,7 @@ package se.iths.auktionera.api.controller;
 import org.springframework.web.bind.annotation.*;
 import se.iths.auktionera.business.model.Auction;
 import se.iths.auktionera.business.model.CreateAuctionRequest;
+import se.iths.auktionera.business.model.CreateBidRequest;
 import se.iths.auktionera.business.service.IAuctionService;
 
 import javax.servlet.http.HttpServletRequest;
@@ -19,7 +20,6 @@ public class AuctionController {
         this.auctionService = auctionService;
     }
 
-
     @GetMapping("api/auctions")
     public List<Auction> getAuctions(@RequestParam Map<String, String> filter, @RequestParam Map<String, String> sort) {
         return auctionService.getAuctions(filter, sort);
@@ -33,5 +33,10 @@ public class AuctionController {
     @PostMapping("api/auctions")
     public Auction createAuction(@Valid @RequestBody CreateAuctionRequest auctionRequest, HttpServletRequest request) {
         return auctionService.createAuction((String) request.getAttribute("authId"), auctionRequest);
+    }
+
+    @PostMapping("api/auctions/{id}/bid")
+    public Auction createBid(@Valid @RequestBody CreateBidRequest bidRequest, HttpServletRequest request) {
+        return auctionService.createBid((String) request.getAttribute("authId"), bidRequest);
     }
 }

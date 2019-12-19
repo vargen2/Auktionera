@@ -38,11 +38,9 @@ public class AuctionEntity {
     private AuctionState state;
     private Instant endsAt;
     private Instant createdAt;
-    private Instant currentBidAt;
     private Instant endedAt;
     private int startPrice;
     private int buyoutPrice;
-    private int currentBid;
 
     public AuctionEntity(CreateAuctionRequest request, AccountEntity seller) {
         Objects.requireNonNull(request);

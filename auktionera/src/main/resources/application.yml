@@ -6,13 +6,7 @@ server:
 logging:
   level:
     root: WARN
-    org:
-      springframework:
-        boot:
-          web:
-            embedded:
-              tomcat:
-                TomcatWebServer: INFO
+    org.springframework.boot.web.embedded.tomcat.TomcatWebServer: INFO
 
 
     #org.springframework: WARN
@@ -36,12 +30,12 @@ spring:
       #oauth2:
       # client:
       #  registration:
-        # github:
-        #   client-id:
-        #   client-secret:
-        #google:
-        #  client-id:
-        #  client-secret:
+      # github:
+      #   client-id:
+      #   client-secret:
+      #google:
+    #  client-id:
+    #  client-secret:
   main:
     banner-mode: off
 

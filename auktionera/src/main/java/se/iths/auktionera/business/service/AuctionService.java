@@ -59,6 +59,7 @@ public class AuctionService implements IAuctionService {
         Validate.isTrue(auctionEntity.getState() == AuctionState.InProgress);
         Validate.isTrue(bidder.getId() != auctionEntity.getSeller().getId(), "Bidder can't be same as Seller.");
 
+        //Todo måste kolla endsat och endeda
         var previousBids = bidRepo.findAllByAuctionIdOrderByBidAt(auctionEntity.getId());
 
         long previousBidId = 0;
@@ -85,4 +86,6 @@ public class AuctionService implements IAuctionService {
 
         return new Auction(auctionEntity, bidEntity);
     }
+
+
 }

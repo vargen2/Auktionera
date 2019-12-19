@@ -8,7 +8,7 @@ logging:
     root: ERROR
     org.springframework.web: ERROR
     org.hibernate: ERROR
-
+    se.iths.auktionera: INFO
     #org.springframework: WARN
     #org.hibernate: ERROR
     #org.springframework.web: ERROR
@@ -33,7 +33,7 @@ spring:
       # github:
       #   client-id:
       #   client-secret:
-      #google:
+    #google:
     #  client-id:
     #  client-secret:
   main:

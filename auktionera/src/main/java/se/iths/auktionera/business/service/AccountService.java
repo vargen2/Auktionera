@@ -20,8 +20,9 @@ public class AccountService implements IAccountService {
 
     @Override
     public Account getAccount(String authId) {
+        System.out.println(authId);
         AccountEntity acc = accountRepo.findByAuthId(authId)
-                .orElse(accountRepo.saveAndFlush(AccountEntity.builder().authId(authId).createdAt(Instant.now()).build()));
+                .orElseGet(() -> accountRepo.saveAndFlush(AccountEntity.builder().authId(authId).createdAt(Instant.now()).build()));
 
         return new Account(acc);
     }

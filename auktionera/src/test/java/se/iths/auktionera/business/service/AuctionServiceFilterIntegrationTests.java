@@ -57,7 +57,7 @@ public class AuctionServiceFilterIntegrationTests {
                     .title("Stol")
                     .description("En bra stol")
                     .startPrice(1000)
-                    .endsAt(Instant.now().plus(1, ChronoUnit.DAYS))
+                    .endsAt(Instant.now().plus(1, ChronoUnit.DAYS).plus(1, ChronoUnit.HOURS))
                     .build();
 
             auctionService.createAuction("User", en_bra_stol);
@@ -78,7 +78,7 @@ public class AuctionServiceFilterIntegrationTests {
                     .title("Stolen")
                     .description("En mellan stol")
                     .startPrice(500)
-                    .endsAt(Instant.now().plus(1, ChronoUnit.DAYS))
+                    .endsAt(Instant.now().plus(1, ChronoUnit.DAYS).plus(2, ChronoUnit.HOURS))
                     .build();
 
             auctionService.createAuction("User", request);
@@ -90,7 +90,7 @@ public class AuctionServiceFilterIntegrationTests {
                     .description("A plastic boat. No engine")
                     .startPrice(15000)
                     .buyoutPrice(30000)
-                    .endsAt(Instant.now().plus(1, ChronoUnit.DAYS))
+                    .endsAt(Instant.now().plus(1, ChronoUnit.DAYS).plus(3, ChronoUnit.HOURS))
                     .build();
 
             auctionService.createAuction("User", request);
@@ -228,4 +228,30 @@ public class AuctionServiceFilterIntegrationTests {
         List<Auction> auctions = auctionService.getAuctions(filters, null);
         assertEquals(1, auctions.size());
     }
+
+    @Test
+    void getAuctionsByEndsAtBeforeSortByEndsAtASC() {
+        Map<String, String> filters = Map.of("endsatbefore", Instant.now().plus(2, ChronoUnit.DAYS).toString());
+        Map<String, String> sorters = Map.of("endsat", "asc");
+        List<Auction> auctions = auctionService.getAuctions(filters, sorters);
+        assertEquals(4, auctions.size());
+        assertEquals("En dålig stol", auctions.get(0).getDescription());
+        assertEquals("En bra stol", auctions.get(1).getDescription());
+        assertEquals("En mellan stol", auctions.get(2).getDescription());
+        assertEquals("A plastic boat. No engine", auctions.get(3).getDescription());
+    }
+
+
+    @Test
+    void getAuctionsByEndsAtBeforeSortByEndsAtDESC() {
+        Map<String, String> filters = Map.of("endsatbefore", Instant.now().plus(2, ChronoUnit.DAYS).toString());
+        Map<String, String> sorters = Map.of("endsat", "desc");
+        List<Auction> auctions = auctionService.getAuctions(filters, sorters);
+        assertEquals(4, auctions.size());
+        assertEquals("En dålig stol", auctions.get(3).getDescription());
+        assertEquals("En bra stol", auctions.get(2).getDescription());
+        assertEquals("En mellan stol", auctions.get(1).getDescription());
+        assertEquals("A plastic boat. No engine", auctions.get(0).getDescription());
+    }
+
 }

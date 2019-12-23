@@ -21,8 +21,8 @@ public class AuctionController {
     }
 
     @GetMapping("api/auctions")
-    public List<Auction> getAuctions(@RequestParam Map<String, String> filter, @RequestParam Map<String, String> sort) {
-        return auctionService.getAuctions(filter, sort);
+    public List<Auction> getAuctions(@RequestParam Map<String, String> all) {
+        return auctionService.getAuctions(all, all);
     }
 
     @GetMapping("api/auctions/{id}")

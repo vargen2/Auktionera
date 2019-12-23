@@ -1,12 +1,14 @@
 package se.iths.auktionera.business.service;
 
 import org.apache.commons.lang3.Validate;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import se.iths.auktionera.business.enums.AuctionState;
 import se.iths.auktionera.business.model.Auction;
 import se.iths.auktionera.business.model.CreateAuctionRequest;
 import se.iths.auktionera.business.model.CreateBidRequest;
+import se.iths.auktionera.business.query.AuctionSort;
 import se.iths.auktionera.business.query.AuctionSpecification;
 import se.iths.auktionera.persistence.entity.AuctionEntity;
 import se.iths.auktionera.persistence.entity.BidEntity;
@@ -37,17 +39,15 @@ public class AuctionService implements IAuctionService {
     @Override
     public List<Auction> getAuctions(Map<String, String> filters, Map<String, String> sorters) {
 
-        if (filters == null && sorters == null) {
-            return auctionRepo.findAll().stream().map(Auction::new).collect(Collectors.toList());
+        Sort sort = sorters == null ? Sort.unsorted() : AuctionSort.create(sorters);
+
+        if (filters == null) {
+            return auctionRepo.findAll(sort).stream().map(Auction::new).collect(Collectors.toList());
         }
 
-        //  Example<AuctionEntity> example = AuctionFilter.create(filters);
         Specification<AuctionEntity> specification = AuctionSpecification.create(filters);
 
-        return auctionRepo.findAll(specification).stream().map(Auction::new).collect(Collectors.toList());
-        //sort
-        //endsAt asc/desc
-        //currentPrice asc/desc
+        return auctionRepo.findAll(specification, sort).stream().map(Auction::new).collect(Collectors.toList());
     }
 
     @Override

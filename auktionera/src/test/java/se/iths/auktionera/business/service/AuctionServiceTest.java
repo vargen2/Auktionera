@@ -4,6 +4,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Sort;
 import se.iths.auktionera.business.model.Auction;
 import se.iths.auktionera.business.model.CreateAuctionRequest;
 import se.iths.auktionera.persistence.entity.AccountEntity;
@@ -64,7 +65,7 @@ class AuctionServiceTest {
 
     @Test
     void getAuctions() {
-        when(auctionRepo.findAll()).thenReturn(List.of(auctionEntity));
+        when(auctionRepo.findAll(any(Sort.class))).thenReturn(List.of(auctionEntity));
         List<Auction> auctions = auctionService.getAuctions(null, null);
         assertNotNull(auctions);
         assertEquals(1, auctions.size());

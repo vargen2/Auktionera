@@ -273,6 +273,6 @@ public class AuctionServiceIntegrationTests {
         Auction auction = auctionService.createBid("User2", createBidRequest);
 
         assertEquals(4000, auction.getCurrentBid());
-        assertEquals(AuctionState.EndedBought, auction.getState());
+        assertEquals(AuctionState.EndedWithBuyout, auction.getState());
     }
 }

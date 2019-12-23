@@ -12,6 +12,7 @@ import se.iths.auktionera.persistence.repo.BidRepo;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 @Scope("prototype")
@@ -22,6 +23,8 @@ public class EndAuctionsTask implements IEndAuctionsTask {
     private final AuctionRepo auctionRepo;
     private final BidRepo bidRepo;
 
+    private int counter;
+
     public EndAuctionsTask(AuctionRepo auctionRepo, BidRepo bidRepo) {
         this.auctionRepo = auctionRepo;
         this.bidRepo = bidRepo;
@@ -29,11 +32,33 @@ public class EndAuctionsTask implements IEndAuctionsTask {
 
     @Override
     public void endAuctions() {
-        List<AuctionEntity> auctions = auctionRepo.findAllWhereStateInProgress();
-        log.info("Found {} auctions to end.", auctions.size());
+        List<Long> auctionIds = auctionRepo.findAllWhereStateInProgress()
+                .stream()
+                .map(AuctionEntity::getId)
+                .collect(Collectors.toList());
 
-        for (var auction : auctions) {
-            auction.setEndedAt(Instant.now());
+        log.info("Found {} auctions to end.", auctionIds.size());
+
+
+        if (auctionIds.isEmpty()) {
+            return;
+        }
+
+        for (var auction : auctionIds) {
+            endAuction(auction);
+        }
+
+        log.info("Ended {} of {} auctions.", counter, auctionIds.size());
+    }
+
+    public void endAuction(long id) {
+        try {
+            AuctionEntity auction = auctionRepo.findById(id).orElseThrow();
+            if (auction.getState() != AuctionState.InProgress) {
+                log.warn("Auction {} is not in state {} when trying to end it.", id, AuctionState.InProgress);
+                return;
+            }
+
             List<BidEntity> bids = bidRepo.findAllByAuctionIdOrderByBidAt(auction.getId());
 
             if (bids != null && bids.size() > 0) {
@@ -41,8 +66,12 @@ public class EndAuctionsTask implements IEndAuctionsTask {
             } else {
                 auction.setState(AuctionState.EndedNotBought);
             }
+            auction.setEndedAt(Instant.now());
             auctionRepo.saveAndFlush(auction);
-            log.info("Auction {} {}.", auction.getId(), auction.getState());
+            counter++;
+            log.info("Auction {} ended with state {}.", auction.getId(), auction.getState());
+        } catch (Exception e) {
+            log.error("Something went wrong when trying to end auction {}.", id, e);
         }
     }
 }

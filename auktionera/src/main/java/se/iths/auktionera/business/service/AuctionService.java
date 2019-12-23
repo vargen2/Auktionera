@@ -1,11 +1,13 @@
 package se.iths.auktionera.business.service;
 
 import org.apache.commons.lang3.Validate;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import se.iths.auktionera.business.enums.AuctionState;
 import se.iths.auktionera.business.model.Auction;
 import se.iths.auktionera.business.model.CreateAuctionRequest;
 import se.iths.auktionera.business.model.CreateBidRequest;
+import se.iths.auktionera.business.query.AuctionSpecification;
 import se.iths.auktionera.persistence.entity.AuctionEntity;
 import se.iths.auktionera.persistence.entity.BidEntity;
 import se.iths.auktionera.persistence.repo.AccountRepo;
@@ -13,6 +15,7 @@ import se.iths.auktionera.persistence.repo.AuctionRepo;
 import se.iths.auktionera.persistence.repo.BidRepo;
 
 import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -33,7 +36,18 @@ public class AuctionService implements IAuctionService {
 
     @Override
     public List<Auction> getAuctions(Map<String, String> filters, Map<String, String> sorters) {
-        return auctionRepo.findAll().stream().map(Auction::new).collect(Collectors.toList());
+
+        if (filters == null && sorters == null) {
+            return auctionRepo.findAll().stream().map(Auction::new).collect(Collectors.toList());
+        }
+
+        //  Example<AuctionEntity> example = AuctionFilter.create(filters);
+        Specification<AuctionEntity> specification = AuctionSpecification.create(filters);
+
+        return auctionRepo.findAll(specification).stream().map(Auction::new).collect(Collectors.toList());
+        //sort
+        //endsAt asc/desc
+        //currentPrice asc/desc
     }
 
     @Override
@@ -56,10 +70,12 @@ public class AuctionService implements IAuctionService {
 
         var bidder = accountRepo.findByAuthId(authId).orElseThrow();
         var auctionEntity = auctionRepo.findById(bidRequest.getAuctionId()).orElseThrow();
-        Validate.isTrue(auctionEntity.getState() == AuctionState.InProgress);
+        Validate.isTrue(auctionEntity.getState() == AuctionState.InProgress, "Auction ended.");
         Validate.isTrue(bidder.getId() != auctionEntity.getSeller().getId(), "Bidder can't be same as Seller.");
+        Validate.isTrue(Instant.now().isBefore(auctionEntity.getEndsAt()), "Auction expired.");
+        Validate.isTrue(auctionEntity.getEndedAt() == null, "Something went wrong.");
 
-        //Todo måste kolla endsat och endeda
+
         var previousBids = bidRepo.findAllByAuctionIdOrderByBidAt(auctionEntity.getId());
 
         long previousBidId = 0;
@@ -79,8 +95,14 @@ public class AuctionService implements IAuctionService {
         bidRepo.saveAndFlush(bidEntity);
 
         if (auctionEntity.getBuyoutPrice() > 0 && bidEntity.getBidPrice() >= auctionEntity.getBuyoutPrice()) {
-            auctionEntity.setState(AuctionState.EndedBought);
+            auctionEntity.setState(AuctionState.EndedWithBuyout);
             auctionEntity.setEndedAt(Instant.now());
+            auctionRepo.saveAndFlush(auctionEntity);
+        }
+
+        Instant tenMinutesIntoFuture = Instant.now().plus(10, ChronoUnit.MINUTES);
+        if (auctionEntity.getState() == AuctionState.InProgress && auctionEntity.getEndsAt().isBefore(tenMinutesIntoFuture)) {
+            auctionEntity.setEndsAt(tenMinutesIntoFuture);
             auctionRepo.saveAndFlush(auctionEntity);
         }
 

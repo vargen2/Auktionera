@@ -1,6 +1,7 @@
 package se.iths.auktionera.persistence.repo;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
 import se.iths.auktionera.business.enums.AuctionState;
 import se.iths.auktionera.persistence.entity.AuctionEntity;
@@ -9,7 +10,7 @@ import java.time.Instant;
 import java.util.List;
 
 @Repository
-public interface AuctionRepo extends JpaRepository<AuctionEntity, Long> {
+public interface AuctionRepo extends JpaRepository<AuctionEntity, Long>, JpaSpecificationExecutor<AuctionEntity> {
 
     default List<AuctionEntity> findAllWhereStateInProgress() {
         return findAllByStateAndEndsAtBefore(AuctionState.InProgress, Instant.now());

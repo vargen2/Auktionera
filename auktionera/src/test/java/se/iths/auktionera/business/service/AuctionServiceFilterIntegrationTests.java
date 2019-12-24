@@ -11,6 +11,7 @@ import se.iths.auktionera.persistence.entity.AccountEntity;
 import se.iths.auktionera.persistence.repo.AccountRepo;
 import se.iths.auktionera.persistence.repo.AuctionRepo;
 import se.iths.auktionera.persistence.repo.BidRepo;
+import se.iths.auktionera.persistence.repo.ReviewRepo;
 
 import javax.transaction.Transactional;
 import java.time.Instant;
@@ -32,6 +33,8 @@ public class AuctionServiceFilterIntegrationTests {
     private AuctionRepo auctionRepo;
     @Autowired
     private BidRepo bidRepo;
+    @Autowired
+    private ReviewRepo reviewRepo;
 
     private IAuctionService auctionService;
 
@@ -50,7 +53,7 @@ public class AuctionServiceFilterIntegrationTests {
         accountRepo.saveAndFlush(accountEntity);
 
 
-        auctionService = new AuctionService(accountRepo, auctionRepo, bidRepo);
+        auctionService = new AuctionService(accountRepo, auctionRepo, bidRepo, reviewRepo);
 
         {
             CreateAuctionRequest en_bra_stol = CreateAuctionRequest.builder()

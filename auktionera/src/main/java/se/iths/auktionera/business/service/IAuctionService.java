@@ -1,8 +1,6 @@
 package se.iths.auktionera.business.service;
 
-import se.iths.auktionera.business.model.Auction;
-import se.iths.auktionera.business.model.CreateAuctionRequest;
-import se.iths.auktionera.business.model.CreateBidRequest;
+import se.iths.auktionera.business.model.*;
 
 import java.util.List;
 import java.util.Map;
@@ -15,5 +13,7 @@ public interface IAuctionService {
     Auction createAuction(String authId, CreateAuctionRequest auctionRequest);
 
     Auction createBid(String authId, CreateBidRequest bidRequest);
+
+    Review createReview(String authId, CreateReviewRequest reviewRequest);
 
 }

@@ -23,18 +23,15 @@ public class AuctionEntity {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
 
-
-    private String title;
-
-    private String description;
-
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(
-            name = "account_entity_id",
+            name = "seller_id",
             nullable = false
     )
     private AccountEntity seller;
 
+    private String title;
+    private String description;
     private AuctionState state;
     private Instant endsAt;
     private Instant createdAt;

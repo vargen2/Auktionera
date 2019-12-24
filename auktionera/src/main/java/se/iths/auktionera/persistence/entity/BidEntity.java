@@ -14,7 +14,7 @@ import java.util.Objects;
 @AllArgsConstructor
 @Builder
 @Table(uniqueConstraints =
-@UniqueConstraint(columnNames = {"auction_entity_id", "previousBidId"}))
+@UniqueConstraint(columnNames = {"bidder_id", "previousBidId"}))
 public class BidEntity {
 
     @Id
@@ -23,14 +23,14 @@ public class BidEntity {
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(
-            name = "account_entity_id",
+            name = "bidder_id",
             nullable = false
     )
     private AccountEntity bidder;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(
-            name = "auction_entity_id",
+            name = "auction_id",
             nullable = false
     )
     private AuctionEntity auction;

@@ -42,7 +42,7 @@ class AuctionServiceTest {
 
     @BeforeEach
     void setUp() {
-        auctionService = new AuctionService(accountRepo, auctionRepo, bidRepo, reviewRepo);
+        auctionService = new AuctionService(accountRepo, auctionRepo, bidRepo);
         accountEntity = AccountEntity.builder()
                 .id(10)
                 .anonymousBuyer(false)

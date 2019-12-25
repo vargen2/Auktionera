@@ -1,6 +1,7 @@
 package se.iths.auktionera.persistence.entity;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.apache.commons.lang3.Validate;
 
@@ -10,6 +11,7 @@ import java.util.Objects;
 @Entity
 @Getter
 @Setter
+@NoArgsConstructor
 public class ReviewEntity {
 
     @Id

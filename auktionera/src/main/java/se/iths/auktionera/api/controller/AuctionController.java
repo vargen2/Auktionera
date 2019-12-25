@@ -1,7 +1,9 @@
 package se.iths.auktionera.api.controller;
 
 import org.springframework.web.bind.annotation.*;
-import se.iths.auktionera.business.model.*;
+import se.iths.auktionera.business.model.Auction;
+import se.iths.auktionera.business.model.CreateAuctionRequest;
+import se.iths.auktionera.business.model.CreateBidRequest;
 import se.iths.auktionera.business.service.IAuctionService;
 
 import javax.servlet.http.HttpServletRequest;
@@ -38,8 +40,5 @@ public class AuctionController {
         return auctionService.createBid((String) request.getAttribute("authId"), bidRequest);
     }
 
-    @PostMapping("api/auctions/{id}/review")
-    public Review createReview(@Valid @RequestBody CreateReviewRequest reviewRequest, HttpServletRequest request) {
-        return auctionService.createReview((String) request.getAttribute("authId"), reviewRequest);
-    }
+
 }

@@ -31,6 +31,7 @@ public class ReviewIntegrationTests {
     private ReviewRepo reviewRepo;
 
     private IAuctionService auctionService;
+    private IReviewService reviewService;
 
     private long auctionId;
 
@@ -74,7 +75,8 @@ public class ReviewIntegrationTests {
         accountRepo.saveAndFlush(accountEntity3);
 
 
-        auctionService = new AuctionService(accountRepo, auctionRepo, bidRepo, reviewRepo);
+        auctionService = new AuctionService(accountRepo, auctionRepo, bidRepo);
+        reviewService = new ReviewService(accountRepo, auctionRepo, bidRepo, reviewRepo);
 
         CreateAuctionRequest en_bra_stol = CreateAuctionRequest.builder()
                 .title("Stol")
@@ -94,7 +96,7 @@ public class ReviewIntegrationTests {
     @Test
     public void SellerCreate() {
         CreateReviewRequest reviewRequest = CreateReviewRequest.builder().auctionId(auctionId).rating(5).text("asd").build();
-        Review review = auctionService.createReview("User", reviewRequest);
+        Review review = reviewService.createReview("User", reviewRequest);
         assertEquals(reviewRequest.getRating(), review.getRating());
         assertEquals(reviewRequest.getText(), review.getText());
     }
@@ -102,7 +104,7 @@ public class ReviewIntegrationTests {
     @Test
     public void SellerCreateWithNoText() {
         CreateReviewRequest reviewRequest = CreateReviewRequest.builder().auctionId(auctionId).rating(5).build();
-        Review review = auctionService.createReview("User", reviewRequest);
+        Review review = reviewService.createReview("User", reviewRequest);
         assertEquals(reviewRequest.getRating(), review.getRating());
         assertNull(review.getText());
     }
@@ -110,20 +112,20 @@ public class ReviewIntegrationTests {
     @Test
     public void SellerCreateAgainFail() {
         CreateReviewRequest reviewRequest = CreateReviewRequest.builder().auctionId(auctionId).rating(5).text("asd").build();
-        Review review = auctionService.createReview("User", reviewRequest);
-        assertThrows(IllegalArgumentException.class, () -> auctionService.createReview("User", reviewRequest));
+        Review review = reviewService.createReview("User", reviewRequest);
+        assertThrows(IllegalArgumentException.class, () -> reviewService.createReview("User", reviewRequest));
     }
 
     @Test
     public void BuyerAndSellerCreate() {
         CreateReviewRequest reviewRequest = CreateReviewRequest.builder().auctionId(auctionId).rating(5).text("asd").build();
         {
-            Review review = auctionService.createReview("User2", reviewRequest);
+            Review review = reviewService.createReview("User2", reviewRequest);
             assertEquals(reviewRequest.getRating(), review.getRating());
             assertEquals(reviewRequest.getText(), review.getText());
         }
         {
-            Review review = auctionService.createReview("User", reviewRequest);
+            Review review = reviewService.createReview("User", reviewRequest);
             assertEquals(reviewRequest.getRating(), review.getRating());
             assertEquals(reviewRequest.getText(), review.getText());
         }

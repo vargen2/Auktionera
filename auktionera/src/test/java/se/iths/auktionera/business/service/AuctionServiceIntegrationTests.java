@@ -77,7 +77,7 @@ public class AuctionServiceIntegrationTests {
         accountRepo.saveAndFlush(accountEntity3);
 
 
-        auctionService = new AuctionService(accountRepo, auctionRepo, bidRepo, reviewRepo);
+        auctionService = new AuctionService(accountRepo, auctionRepo, bidRepo);
 
         CreateAuctionRequest en_bra_stol = CreateAuctionRequest.builder()
                 .title("Stol")

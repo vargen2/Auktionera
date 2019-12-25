@@ -1,0 +1,66 @@
+package se.iths.auktionera.business.service;
+
+import org.apache.commons.lang3.Validate;
+import org.springframework.stereotype.Service;
+import se.iths.auktionera.business.enums.AuctionState;
+import se.iths.auktionera.business.model.CreateReviewRequest;
+import se.iths.auktionera.business.model.Review;
+import se.iths.auktionera.persistence.entity.BidEntity;
+import se.iths.auktionera.persistence.entity.ReviewEntity;
+import se.iths.auktionera.persistence.repo.AccountRepo;
+import se.iths.auktionera.persistence.repo.AuctionRepo;
+import se.iths.auktionera.persistence.repo.BidRepo;
+import se.iths.auktionera.persistence.repo.ReviewRepo;
+
+import java.util.Objects;
+
+@Service
+public class ReviewService implements IReviewService {
+
+    private final AccountRepo accountRepo;
+    private final AuctionRepo auctionRepo;
+    private final BidRepo bidRepo;
+    private final ReviewRepo reviewRepo;
+
+    public ReviewService(AccountRepo accountRepo, AuctionRepo auctionRepo, BidRepo bidRepo, ReviewRepo reviewRepo) {
+        this.accountRepo = accountRepo;
+        this.auctionRepo = auctionRepo;
+        this.bidRepo = bidRepo;
+        this.reviewRepo = reviewRepo;
+    }
+
+    @Override
+    public Review createReview(String authId, CreateReviewRequest reviewRequest) {
+        Objects.requireNonNull(reviewRequest);
+
+        var creator = accountRepo.findByAuthId(authId).orElseThrow();
+        var auctionEntity = auctionRepo.findById(reviewRequest.getAuctionId()).orElseThrow();
+
+        Validate.isTrue(auctionEntity.getState() == AuctionState.EndedBought || auctionEntity.getState() == AuctionState.EndedWithBuyout, "Auction not bought.");
+
+        var previousBids = bidRepo.findAllByAuctionIdOrderByBidAt(auctionEntity.getId());
+        BidEntity lastBid = previousBids.get(previousBids.size() - 1);
+        var buyer = lastBid.getBidder();
+
+        Validate.isTrue(creator.getId() == auctionEntity.getSeller().getId() || creator.getId() == buyer.getId(), "Only seller or buyer can create review.");
+
+        //seller creates review
+        if (creator.getId() == auctionEntity.getSeller().getId()) {
+            Validate.isTrue(!reviewRepo.existsByAuction_IdAndSeller_IdAndCreatedBySellerTrue(auctionEntity.getId(), auctionEntity.getSeller().getId()), "Review from seller already exists.");
+            var reviewEntity = new ReviewEntity(true, reviewRequest.getRating(), reviewRequest.getText(), auctionEntity, auctionEntity.getSeller(), buyer);
+
+            reviewRepo.saveAndFlush(reviewEntity);
+            return new Review(reviewEntity);
+        }
+
+        //buyer creates review
+        if (creator.getId() == buyer.getId()) {
+            Validate.isTrue(!reviewRepo.existsByAuction_IdAndBuyer_IdAndCreatedBySellerFalse(auctionEntity.getId(), buyer.getId()), "Review from buyer already exists.");
+            var reviewEntity = new ReviewEntity(false, reviewRequest.getRating(), reviewRequest.getText(), auctionEntity, auctionEntity.getSeller(), buyer);
+            reviewRepo.saveAndFlush(reviewEntity);
+            return new Review(reviewEntity);
+        }
+
+        return null;
+    }
+}

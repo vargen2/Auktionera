@@ -5,16 +5,16 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import se.iths.auktionera.business.enums.AuctionState;
-import se.iths.auktionera.business.model.*;
+import se.iths.auktionera.business.model.Auction;
+import se.iths.auktionera.business.model.CreateAuctionRequest;
+import se.iths.auktionera.business.model.CreateBidRequest;
 import se.iths.auktionera.business.query.AuctionSort;
 import se.iths.auktionera.business.query.AuctionSpecification;
 import se.iths.auktionera.persistence.entity.AuctionEntity;
 import se.iths.auktionera.persistence.entity.BidEntity;
-import se.iths.auktionera.persistence.entity.ReviewEntity;
 import se.iths.auktionera.persistence.repo.AccountRepo;
 import se.iths.auktionera.persistence.repo.AuctionRepo;
 import se.iths.auktionera.persistence.repo.BidRepo;
-import se.iths.auktionera.persistence.repo.ReviewRepo;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -29,13 +29,11 @@ public class AuctionService implements IAuctionService {
     private final AccountRepo accountRepo;
     private final AuctionRepo auctionRepo;
     private final BidRepo bidRepo;
-    private final ReviewRepo reviewRepo;
 
-    public AuctionService(AccountRepo accountRepo, AuctionRepo auctionRepo, BidRepo bidRepo, ReviewRepo reviewRepo) {
+    public AuctionService(AccountRepo accountRepo, AuctionRepo auctionRepo, BidRepo bidRepo) {
         this.accountRepo = accountRepo;
         this.auctionRepo = auctionRepo;
         this.bidRepo = bidRepo;
-        this.reviewRepo = reviewRepo;
     }
 
     @Override
@@ -111,40 +109,7 @@ public class AuctionService implements IAuctionService {
         return new Auction(auctionEntity, bidEntity);
     }
 
-    @Override
-    public Review createReview(String authId, CreateReviewRequest reviewRequest) {
-        Objects.requireNonNull(reviewRequest);
 
-        var creator = accountRepo.findByAuthId(authId).orElseThrow();
-        var auctionEntity = auctionRepo.findById(reviewRequest.getAuctionId()).orElseThrow();
-
-        Validate.isTrue(auctionEntity.getState() == AuctionState.EndedBought || auctionEntity.getState() == AuctionState.EndedWithBuyout, "Auction not bought.");
-
-        var previousBids = bidRepo.findAllByAuctionIdOrderByBidAt(auctionEntity.getId());
-        BidEntity lastBid = previousBids.get(previousBids.size() - 1);
-        var buyer = lastBid.getBidder();
-
-        Validate.isTrue(creator.getId() == auctionEntity.getSeller().getId() || creator.getId() == buyer.getId(), "Only seller or buyer can create review.");
-
-        //seller creates review
-        if (creator.getId() == auctionEntity.getSeller().getId()) {
-            Validate.isTrue(!reviewRepo.existsByAuction_IdAndSeller_IdAndCreatedBySellerTrue(auctionEntity.getId(), auctionEntity.getSeller().getId()), "Review from seller already exists.");
-            var reviewEntity = new ReviewEntity(true, reviewRequest.getRating(), reviewRequest.getText(), auctionEntity, auctionEntity.getSeller(), buyer);
-
-            reviewRepo.saveAndFlush(reviewEntity);
-            return new Review(reviewEntity);
-        }
-
-        //buyer creates review
-        if (creator.getId() == buyer.getId()) {
-            Validate.isTrue(!reviewRepo.existsByAuction_IdAndBuyer_IdAndCreatedBySellerFalse(auctionEntity.getId(), buyer.getId()), "Review from buyer already exists.");
-            var reviewEntity = new ReviewEntity(false, reviewRequest.getRating(), reviewRequest.getText(), auctionEntity, auctionEntity.getSeller(), buyer);
-            reviewRepo.saveAndFlush(reviewEntity);
-            return new Review(reviewEntity);
-        }
-
-        return null;
-    }
 
 
 }

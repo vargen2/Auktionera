@@ -15,6 +15,7 @@ import se.iths.auktionera.persistence.entity.BidEntity;
 import se.iths.auktionera.persistence.repo.AccountRepo;
 import se.iths.auktionera.persistence.repo.AuctionRepo;
 import se.iths.auktionera.persistence.repo.BidRepo;
+import se.iths.auktionera.persistence.repo.ImageRepo;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -29,11 +30,13 @@ public class AuctionService implements IAuctionService {
     private final AccountRepo accountRepo;
     private final AuctionRepo auctionRepo;
     private final BidRepo bidRepo;
+    private final ImageRepo imageRepo;
 
-    public AuctionService(AccountRepo accountRepo, AuctionRepo auctionRepo, BidRepo bidRepo) {
+    public AuctionService(AccountRepo accountRepo, AuctionRepo auctionRepo, BidRepo bidRepo, ImageRepo imageRepo) {
         this.accountRepo = accountRepo;
         this.auctionRepo = auctionRepo;
         this.bidRepo = bidRepo;
+        this.imageRepo = imageRepo;
     }
 
     @Override

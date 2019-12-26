@@ -2,6 +2,7 @@ package se.iths.auktionera.business.service;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.Sort;
@@ -9,10 +10,7 @@ import se.iths.auktionera.business.model.Auction;
 import se.iths.auktionera.business.model.CreateAuctionRequest;
 import se.iths.auktionera.persistence.entity.AccountEntity;
 import se.iths.auktionera.persistence.entity.AuctionEntity;
-import se.iths.auktionera.persistence.repo.AccountRepo;
-import se.iths.auktionera.persistence.repo.AuctionRepo;
-import se.iths.auktionera.persistence.repo.BidRepo;
-import se.iths.auktionera.persistence.repo.ReviewRepo;
+import se.iths.auktionera.persistence.repo.*;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -35,6 +33,8 @@ class AuctionServiceTest {
     BidRepo bidRepo;
     @MockBean
     ReviewRepo reviewRepo;
+    @Autowired
+    private ImageRepo imageRepo;
 
     private IAuctionService auctionService;
     private AccountEntity accountEntity;
@@ -42,7 +42,7 @@ class AuctionServiceTest {
 
     @BeforeEach
     void setUp() {
-        auctionService = new AuctionService(accountRepo, auctionRepo, bidRepo);
+        auctionService = new AuctionService(accountRepo, auctionRepo, bidRepo, imageRepo);
         accountEntity = AccountEntity.builder()
                 .id(10)
                 .anonymousBuyer(false)

@@ -6,10 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import se.iths.auktionera.business.model.*;
 import se.iths.auktionera.persistence.entity.AccountEntity;
-import se.iths.auktionera.persistence.repo.AccountRepo;
-import se.iths.auktionera.persistence.repo.AuctionRepo;
-import se.iths.auktionera.persistence.repo.BidRepo;
-import se.iths.auktionera.persistence.repo.ReviewRepo;
+import se.iths.auktionera.persistence.repo.*;
 
 import javax.transaction.Transactional;
 import java.time.Instant;
@@ -29,6 +26,8 @@ public class ReviewIntegrationTests {
     private BidRepo bidRepo;
     @Autowired
     private ReviewRepo reviewRepo;
+    @Autowired
+    private ImageRepo imageRepo;
 
     private IReviewService reviewService;
 
@@ -74,7 +73,7 @@ public class ReviewIntegrationTests {
         accountRepo.saveAndFlush(accountEntity3);
 
 
-        IAuctionService auctionService = new AuctionService(accountRepo, auctionRepo, bidRepo);
+        IAuctionService auctionService = new AuctionService(accountRepo, auctionRepo, bidRepo, imageRepo);
         reviewService = new ReviewService(accountRepo, auctionRepo, bidRepo, reviewRepo);
 
         CreateAuctionRequest en_bra_stol = CreateAuctionRequest.builder()

@@ -17,8 +17,14 @@ public interface ReviewRepo extends JpaRepository<ReviewEntity, Long> {
         return findAllByBuyer_IdAndCreatedBySellerTrue(userId);
     }
 
+    /**
+     * @see ReviewRepo#findAllOnSeller(long)
+     */
     List<ReviewEntity> findAllBySeller_IdAndCreatedBySellerFalse(long sellerId);
 
+    /**
+     * @see ReviewRepo#findAllOnBuyer(long)
+     */
     List<ReviewEntity> findAllByBuyer_IdAndCreatedBySellerTrue(long buyerId);
 
     boolean existsByAuction_IdAndSeller_IdAndCreatedBySellerTrue(long auctionId, long sellerId);

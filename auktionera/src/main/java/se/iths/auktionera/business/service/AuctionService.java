@@ -12,6 +12,7 @@ import se.iths.auktionera.business.query.AuctionSort;
 import se.iths.auktionera.business.query.AuctionSpecification;
 import se.iths.auktionera.persistence.entity.AuctionEntity;
 import se.iths.auktionera.persistence.entity.BidEntity;
+import se.iths.auktionera.persistence.entity.ImageEntity;
 import se.iths.auktionera.persistence.repo.AccountRepo;
 import se.iths.auktionera.persistence.repo.AuctionRepo;
 import se.iths.auktionera.persistence.repo.BidRepo;
@@ -61,9 +62,24 @@ public class AuctionService implements IAuctionService {
     @Override
     public Auction createAuction(String authId, CreateAuctionRequest auctionRequest) {
         var seller = accountRepo.findByAuthId(authId).orElseThrow();
-        var auctionEntity = new AuctionEntity(auctionRequest, seller);
 
-        return new Auction(auctionRepo.saveAndFlush(auctionEntity));
+        List<ImageEntity> imageEntities = auctionRequest.getImageIds() != null ? imageRepo.findAllById(auctionRequest.getImageIds()) : List.of();
+
+        for (var entity : imageEntities) {
+            Validate.isTrue(entity.getCreator().getId() == seller.getId(), "Can only use own images.");
+            Validate.isTrue(entity.getAuction() == null, "Image already in use.");
+        }
+
+        var auctionEntity = new AuctionEntity(auctionRequest, seller);
+        auctionRepo.saveAndFlush(auctionEntity);
+
+        for (var entity : imageEntities) {
+            entity.setAuction(auctionEntity);
+        }
+        imageRepo.saveAll(imageEntities);
+        imageRepo.flush();
+
+        return new Auction(auctionEntity);
     }
 
     @Override
@@ -112,8 +128,6 @@ public class AuctionService implements IAuctionService {
 
         return new Auction(auctionEntity, bidEntity);
     }
-
-
 
 
 }

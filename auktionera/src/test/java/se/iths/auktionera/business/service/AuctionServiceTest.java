@@ -102,7 +102,6 @@ class AuctionServiceTest {
         assertEquals(auctionEntity.getDescription(), auction.getDescription());
         assertEquals(auctionEntity.getBuyoutPrice(), auction.getBuyoutPrice());
         assertEquals(auctionEntity.getEndsAt(), auction.getEndsAt());
-        assertEquals(auctionEntity.getCreatedAt(), auction.getCreatedAt());
         assertEquals(auctionEntity.getStartPrice(), auction.getStartPrice());
         assertEquals(auctionEntity.getSeller().getUserName(), auction.getSeller().getUserName());
     }

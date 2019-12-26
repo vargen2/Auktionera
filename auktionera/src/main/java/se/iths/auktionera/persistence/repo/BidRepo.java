@@ -9,4 +9,6 @@ import java.util.List;
 @Repository
 public interface BidRepo extends JpaRepository<BidEntity, Long> {
     List<BidEntity> findAllByAuctionIdOrderByBidAt(long auctionId);
+
+    int countAllByBidderId(long bidderId);
 }

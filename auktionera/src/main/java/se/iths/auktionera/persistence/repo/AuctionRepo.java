@@ -17,4 +17,14 @@ public interface AuctionRepo extends JpaRepository<AuctionEntity, Long>, JpaSpec
     }
 
     List<AuctionEntity> findAllByStateAndEndsAtBefore(AuctionState state, Instant instant);
+
+    int countAllBySeller_Id(long sellerId);
+
+    int countAllByBuyer_Id(long buyerId);
+
+    default int countAllSoldBySeller(long sellerId) {
+        return countAllBySeller_IdAndStateOrSeller_IdAndState(sellerId, AuctionState.EndedWithBuyout, sellerId, AuctionState.EndedBought);
+    }
+
+    int countAllBySeller_IdAndStateOrSeller_IdAndState(long sellerId, AuctionState state, long sellerId2, AuctionState state2);
 }

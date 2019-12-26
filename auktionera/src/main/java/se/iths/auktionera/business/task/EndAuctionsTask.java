@@ -62,7 +62,9 @@ public class EndAuctionsTask implements IEndAuctionsTask {
             List<BidEntity> bids = bidRepo.findAllByAuctionIdOrderByBidAt(auction.getId());
 
             if (bids != null && bids.size() > 0) {
+                BidEntity lastBid = bids.get(bids.size() - 1);
                 auction.setState(AuctionState.EndedBought);
+                auction.setBuyer(lastBid.getBidder());
             } else {
                 auction.setState(AuctionState.EndedNotBought);
             }

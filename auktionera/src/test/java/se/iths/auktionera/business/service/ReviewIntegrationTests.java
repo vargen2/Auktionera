@@ -30,7 +30,6 @@ public class ReviewIntegrationTests {
     @Autowired
     private ReviewRepo reviewRepo;
 
-    private IAuctionService auctionService;
     private IReviewService reviewService;
 
     private long auctionId;
@@ -75,7 +74,7 @@ public class ReviewIntegrationTests {
         accountRepo.saveAndFlush(accountEntity3);
 
 
-        auctionService = new AuctionService(accountRepo, auctionRepo, bidRepo);
+        IAuctionService auctionService = new AuctionService(accountRepo, auctionRepo, bidRepo);
         reviewService = new ReviewService(accountRepo, auctionRepo, bidRepo, reviewRepo);
 
         CreateAuctionRequest en_bra_stol = CreateAuctionRequest.builder()

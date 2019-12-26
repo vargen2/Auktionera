@@ -12,7 +12,7 @@ public interface IUserService {
 
     User getUser(long id);
 
-    List<Review> getUserReviews(long id);
+    List<Review> getUserReviews(long id, boolean saleReviews);
 
     UserStats getUserStats(long id);
 }

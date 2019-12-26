@@ -97,6 +97,7 @@ public class AuctionService implements IAuctionService {
         if (auctionEntity.getBuyoutPrice() > 0 && bidEntity.getBidPrice() >= auctionEntity.getBuyoutPrice()) {
             auctionEntity.setState(AuctionState.EndedWithBuyout);
             auctionEntity.setEndedAt(Instant.now());
+            auctionEntity.setBuyer(bidEntity.getBidder());
             auctionRepo.saveAndFlush(auctionEntity);
         }
 

@@ -1,14 +1,15 @@
 package se.iths.auktionera.business.model;
 
-import lombok.*;
+import lombok.Builder;
+import lombok.Getter;
 
 @Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
 @Builder
 public class UserStats {
-    private int totalSales;
+    private int totalAuctionsCreated;
+    private int totalAuctionsSold;
+    private int totalBids;
+    private int totalBuys;
     private float sellerRating;
     private float buyerRating;
 }

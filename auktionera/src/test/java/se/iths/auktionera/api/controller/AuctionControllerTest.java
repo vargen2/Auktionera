@@ -100,7 +100,7 @@ class AuctionControllerTest {
         String json = objectWriter.writeValueAsString(bidRequest);
 
         when(auctionService.createBid(anyString(), any())).thenReturn(auction);
-        mvc.perform(post("/api/auctions/1000/bid").with(csrf()).characterEncoding("utf-8").contentType(MediaType.APPLICATION_JSON).content(json).accept(MediaType.APPLICATION_JSON))
+        mvc.perform(post("/api/auctions/bid").with(csrf()).characterEncoding("utf-8").contentType(MediaType.APPLICATION_JSON).content(json).accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().json("{'seller':{'userName':'testName'}}"))
                 .andExpect(content().json("{'description':'En bra stol'}"));

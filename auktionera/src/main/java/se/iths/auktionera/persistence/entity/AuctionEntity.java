@@ -30,6 +30,12 @@ public class AuctionEntity {
     )
     private AccountEntity seller;
 
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(
+            name = "buyer_id"
+    )
+    private AccountEntity buyer;
+
     private String title;
     private String description;
     private AuctionState state;

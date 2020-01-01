@@ -1,6 +1,8 @@
 package se.iths.auktionera.business.service;
 
 import org.apache.commons.lang3.Validate;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import se.iths.auktionera.business.enums.AuctionState;
 import se.iths.auktionera.business.model.CreateReviewRequest;
@@ -18,6 +20,8 @@ import java.util.Objects;
 
 @Service
 public class ReviewService implements IReviewService {
+
+    private static final Logger log = LoggerFactory.getLogger(ReviewService.class);
 
     private final AccountRepo accountRepo;
     private final AuctionRepo auctionRepo;
@@ -57,7 +61,9 @@ public class ReviewService implements IReviewService {
             if (buyer.isReceiveEmailWhenReviewed()) {
                 notificationSender.enqueueEmailNotification(new EmailNotification(buyer.getEmail(), "New review " + reviewEntity.getId()));
             }
-            return new Review(reviewEntity);
+            var review = new Review(reviewEntity);
+            log.info("Review created: {}", review);
+            return review;
         }
 
         //buyer creates review
@@ -65,7 +71,9 @@ public class ReviewService implements IReviewService {
             Validate.isTrue(!reviewRepo.existsByAuction_IdAndBuyer_IdAndCreatedBySellerFalse(auctionEntity.getId(), buyer.getId()), "Review from buyer already exists.");
             var reviewEntity = new ReviewEntity(false, reviewRequest.getRating(), reviewRequest.getText(), auctionEntity, auctionEntity.getSeller(), buyer);
             reviewRepo.saveAndFlush(reviewEntity);
-            return new Review(reviewEntity);
+            var review = new Review(reviewEntity);
+            log.info("Review created: {}", review);
+            return review;
         }
 
         return null;

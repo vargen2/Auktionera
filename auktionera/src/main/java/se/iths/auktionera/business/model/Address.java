@@ -8,6 +8,7 @@ import se.iths.auktionera.persistence.entity.AccountEntity;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@ToString
 public class Address {
     private String streetName;
     private int postNr;

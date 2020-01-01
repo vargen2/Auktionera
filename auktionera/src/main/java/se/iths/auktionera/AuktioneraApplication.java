@@ -1,37 +1,12 @@
 package se.iths.auktionera;
 
-import org.springframework.amqp.core.Binding;
-import org.springframework.amqp.core.BindingBuilder;
-import org.springframework.amqp.core.Queue;
-import org.springframework.amqp.core.TopicExchange;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.Bean;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
 @SpringBootApplication
 @EnableScheduling
 public class AuktioneraApplication {
-
-    public static final String topicExchangeName = "auktionera-exchange";
-
-    public static final String emailNotificationQueue = "auktionera-emailNotificationQueue";
-
-    @Bean
-    Queue queue() {
-        return new Queue(emailNotificationQueue, false);
-    }
-
-    @Bean
-    TopicExchange exchange() {
-        return new TopicExchange(topicExchangeName);
-    }
-
-    @Bean
-    Binding newBidBinding() {
-        return BindingBuilder.bind(queue()).to(exchange()).with("auktionera.events.#");
-    }
-
 
     public static void main(String[] args) {
         SpringApplication.run(AuktioneraApplication.class, args);

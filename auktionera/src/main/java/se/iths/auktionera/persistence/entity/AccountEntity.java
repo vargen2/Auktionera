@@ -34,5 +34,6 @@ public class AccountEntity {
     private String city = StringUtils.EMPTY;
 
     private boolean receiveEmailWhenReviewed;
+    private boolean receiveEmailWhenOutbid;
 
 }

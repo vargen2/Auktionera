@@ -24,6 +24,10 @@ public class UpdateAccountRequest {
 
     private Boolean anonymousBuyer = null;
 
+    private Boolean receiveEmailWhenReviewed = null;
+
+    private Boolean receiveEmailWhenOutbid = null;
+
     public void setUserName(String newUserName) {
         Validate.isTrue(StringUtils.isAlphanumeric(newUserName), "Not valid userName");
         this.userName = newUserName;

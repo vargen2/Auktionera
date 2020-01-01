@@ -1,5 +1,7 @@
 package se.iths.auktionera.business.service;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import se.iths.auktionera.business.model.Account;
 import se.iths.auktionera.business.model.UpdateAccountRequest;
@@ -12,6 +14,8 @@ import java.util.Optional;
 @Service
 public class AccountService implements IAccountService {
 
+    private static final Logger log = LoggerFactory.getLogger(AccountService.class);
+
     private final AccountRepo accountRepo;
 
     public AccountService(AccountRepo accountRepo) {
@@ -20,10 +24,14 @@ public class AccountService implements IAccountService {
 
     @Override
     public Account getAccount(String authId) {
-        AccountEntity acc = accountRepo.findByAuthId(authId)
-                .orElseGet(() -> accountRepo.saveAndFlush(AccountEntity.builder().authId(authId).createdAt(Instant.now()).build()));
+        var account = accountRepo.findByAuthId(authId);
+        if (account.isPresent()) {
+            return new Account(account.get());
+        }
 
-        return new Account(acc);
+        var newAccount = new Account(accountRepo.saveAndFlush(AccountEntity.builder().authId(authId).createdAt(Instant.now()).build()));
+        log.info("Account created: {}", newAccount);
+        return newAccount;
     }
 
 
@@ -37,7 +45,11 @@ public class AccountService implements IAccountService {
         Optional.ofNullable(updateAccountRequest.getCity()).ifPresent(acc::setCity);
         Optional.ofNullable(updateAccountRequest.getPostNr()).ifPresent(acc::setPostNr);
         Optional.ofNullable(updateAccountRequest.getAnonymousBuyer()).ifPresent(acc::setAnonymousBuyer);
+        Optional.ofNullable(updateAccountRequest.getReceiveEmailWhenReviewed()).ifPresent(acc::setReceiveEmailWhenReviewed);
+        Optional.ofNullable(updateAccountRequest.getReceiveEmailWhenOutbid()).ifPresent(acc::setReceiveEmailWhenOutbid);
 
-        return new Account(accountRepo.saveAndFlush(acc));
+        var updatedAccount = new Account(accountRepo.saveAndFlush(acc));
+        log.info("Account updated: {}", updatedAccount);
+        return updatedAccount;
     }
 }

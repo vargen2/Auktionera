@@ -11,6 +11,7 @@ import se.iths.auktionera.business.model.CreateAuctionRequest;
 import se.iths.auktionera.persistence.entity.AccountEntity;
 import se.iths.auktionera.persistence.entity.AuctionEntity;
 import se.iths.auktionera.persistence.repo.*;
+import se.iths.auktionera.worker.INotificationSender;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -35,6 +36,8 @@ class AuctionServiceTest {
     ReviewRepo reviewRepo;
     @Autowired
     private ImageRepo imageRepo;
+    @MockBean
+    private INotificationSender notificationSender;
 
     private IAuctionService auctionService;
     private AccountEntity accountEntity;
@@ -42,7 +45,7 @@ class AuctionServiceTest {
 
     @BeforeEach
     void setUp() {
-        auctionService = new AuctionService(accountRepo, auctionRepo, bidRepo, imageRepo);
+        auctionService = new AuctionService(accountRepo, auctionRepo, bidRepo, imageRepo, notificationSender);
         accountEntity = AccountEntity.builder()
                 .id(10)
                 .anonymousBuyer(false)

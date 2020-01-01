@@ -8,6 +8,7 @@ import se.iths.auktionera.persistence.entity.AccountEntity;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@ToString
 public class Account {
     private User user;
     private String email;

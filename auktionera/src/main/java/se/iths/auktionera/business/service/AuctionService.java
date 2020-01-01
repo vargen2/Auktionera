@@ -1,6 +1,8 @@
 package se.iths.auktionera.business.service;
 
 import org.apache.commons.lang3.Validate;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
@@ -8,6 +10,7 @@ import se.iths.auktionera.business.enums.AuctionState;
 import se.iths.auktionera.business.model.Auction;
 import se.iths.auktionera.business.model.CreateAuctionRequest;
 import se.iths.auktionera.business.model.CreateBidRequest;
+import se.iths.auktionera.business.model.EmailNotification;
 import se.iths.auktionera.business.query.AuctionSort;
 import se.iths.auktionera.business.query.AuctionSpecification;
 import se.iths.auktionera.persistence.entity.AuctionEntity;
@@ -17,6 +20,7 @@ import se.iths.auktionera.persistence.repo.AccountRepo;
 import se.iths.auktionera.persistence.repo.AuctionRepo;
 import se.iths.auktionera.persistence.repo.BidRepo;
 import se.iths.auktionera.persistence.repo.ImageRepo;
+import se.iths.auktionera.worker.INotificationSender;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -28,16 +32,20 @@ import java.util.stream.Collectors;
 @Service
 public class AuctionService implements IAuctionService {
 
+    private static final Logger log = LoggerFactory.getLogger(AuctionService.class);
+
     private final AccountRepo accountRepo;
     private final AuctionRepo auctionRepo;
     private final BidRepo bidRepo;
     private final ImageRepo imageRepo;
+    private final INotificationSender notificationSender;
 
-    public AuctionService(AccountRepo accountRepo, AuctionRepo auctionRepo, BidRepo bidRepo, ImageRepo imageRepo) {
+    public AuctionService(AccountRepo accountRepo, AuctionRepo auctionRepo, BidRepo bidRepo, ImageRepo imageRepo, INotificationSender notificationSender) {
         this.accountRepo = accountRepo;
         this.auctionRepo = auctionRepo;
         this.bidRepo = bidRepo;
         this.imageRepo = imageRepo;
+        this.notificationSender = notificationSender;
     }
 
     @Override
@@ -79,7 +87,9 @@ public class AuctionService implements IAuctionService {
         imageRepo.saveAll(imageEntities);
         imageRepo.flush();
 
-        return new Auction(auctionEntity);
+        var auction = new Auction(auctionEntity);
+        log.info("Auction created: {}", auction);
+        return auction;
     }
 
     @Override
@@ -110,8 +120,17 @@ public class AuctionService implements IAuctionService {
         }
 
         BidEntity bidEntity = new BidEntity(previousBidId, bidRequest, auctionEntity, bidder);
-
         bidRepo.saveAndFlush(bidEntity);
+
+
+        if (previousBids.size() > 0) {
+            var lastBid = previousBids.get(previousBids.size() - 1);
+            var previousBidder = lastBid.getBidder();
+            if (previousBidder.isReceiveEmailWhenOutbid()) {
+                notificationSender.enqueueEmailNotification(new EmailNotification(previousBidder.getEmail(),
+                        "Someone placed higher bid on auction " + auctionEntity.getId() + ". New bid is " + bidEntity.getBidPrice()));
+            }
+        }
 
         if (auctionEntity.getBuyoutPrice() > 0 && bidEntity.getBidPrice() >= auctionEntity.getBuyoutPrice()) {
             auctionEntity.setState(AuctionState.EndedWithBuyout);
@@ -126,7 +145,9 @@ public class AuctionService implements IAuctionService {
             auctionRepo.saveAndFlush(auctionEntity);
         }
 
-        return new Auction(auctionEntity, bidEntity);
+        var auction = new Auction(auctionEntity, bidEntity);
+        log.info("Bid created: {}", auction);
+        return auction;
     }
 
 

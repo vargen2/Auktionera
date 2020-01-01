@@ -1,4 +1,4 @@
-package se.iths.auktionera.api.config;
+package se.iths.auktionera.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;

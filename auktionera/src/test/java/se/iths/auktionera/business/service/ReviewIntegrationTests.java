@@ -4,9 +4,11 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import se.iths.auktionera.business.model.*;
 import se.iths.auktionera.persistence.entity.AccountEntity;
 import se.iths.auktionera.persistence.repo.*;
+import se.iths.auktionera.worker.INotificationSender;
 
 import javax.transaction.Transactional;
 import java.time.Instant;
@@ -28,6 +30,8 @@ public class ReviewIntegrationTests {
     private ReviewRepo reviewRepo;
     @Autowired
     private ImageRepo imageRepo;
+    @MockBean
+    private INotificationSender notificationSender;
 
     private IReviewService reviewService;
 
@@ -73,7 +77,7 @@ public class ReviewIntegrationTests {
         accountRepo.saveAndFlush(accountEntity3);
 
 
-        IAuctionService auctionService = new AuctionService(accountRepo, auctionRepo, bidRepo, imageRepo);
+        IAuctionService auctionService = new AuctionService(accountRepo, auctionRepo, bidRepo, imageRepo, notificationSender);
         reviewService = new ReviewService(accountRepo, auctionRepo, bidRepo, reviewRepo, null);
 
         CreateAuctionRequest en_bra_stol = CreateAuctionRequest.builder()

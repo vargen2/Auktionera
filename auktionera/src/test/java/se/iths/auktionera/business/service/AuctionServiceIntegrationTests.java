@@ -4,6 +4,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import se.iths.auktionera.business.enums.AuctionState;
 import se.iths.auktionera.business.model.Auction;
 import se.iths.auktionera.business.model.CreateAuctionRequest;
@@ -13,6 +14,7 @@ import se.iths.auktionera.persistence.repo.AccountRepo;
 import se.iths.auktionera.persistence.repo.AuctionRepo;
 import se.iths.auktionera.persistence.repo.BidRepo;
 import se.iths.auktionera.persistence.repo.ImageRepo;
+import se.iths.auktionera.worker.INotificationSender;
 
 import javax.transaction.Transactional;
 import java.time.Instant;
@@ -34,6 +36,9 @@ public class AuctionServiceIntegrationTests {
     private BidRepo bidRepo;
     @Autowired
     private ImageRepo imageRepo;
+
+    @MockBean
+    private INotificationSender notificationSender;
 
     private IAuctionService auctionService;
 
@@ -77,7 +82,7 @@ public class AuctionServiceIntegrationTests {
         accountRepo.saveAndFlush(accountEntity3);
 
 
-        auctionService = new AuctionService(accountRepo, auctionRepo, bidRepo, imageRepo);
+        auctionService = new AuctionService(accountRepo, auctionRepo, bidRepo, imageRepo, notificationSender);
 
         CreateAuctionRequest en_bra_stol = CreateAuctionRequest.builder()
                 .title("Stol")

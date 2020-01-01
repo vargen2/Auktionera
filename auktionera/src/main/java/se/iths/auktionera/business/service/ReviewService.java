@@ -4,6 +4,7 @@ import org.apache.commons.lang3.Validate;
 import org.springframework.stereotype.Service;
 import se.iths.auktionera.business.enums.AuctionState;
 import se.iths.auktionera.business.model.CreateReviewRequest;
+import se.iths.auktionera.business.model.EmailNotification;
 import se.iths.auktionera.business.model.Review;
 import se.iths.auktionera.persistence.entity.BidEntity;
 import se.iths.auktionera.persistence.entity.ReviewEntity;
@@ -11,6 +12,7 @@ import se.iths.auktionera.persistence.repo.AccountRepo;
 import se.iths.auktionera.persistence.repo.AuctionRepo;
 import se.iths.auktionera.persistence.repo.BidRepo;
 import se.iths.auktionera.persistence.repo.ReviewRepo;
+import se.iths.auktionera.worker.INotificationSender;
 
 import java.util.Objects;
 
@@ -21,12 +23,14 @@ public class ReviewService implements IReviewService {
     private final AuctionRepo auctionRepo;
     private final BidRepo bidRepo;
     private final ReviewRepo reviewRepo;
+    private final INotificationSender notificationSender;
 
-    public ReviewService(AccountRepo accountRepo, AuctionRepo auctionRepo, BidRepo bidRepo, ReviewRepo reviewRepo) {
+    public ReviewService(AccountRepo accountRepo, AuctionRepo auctionRepo, BidRepo bidRepo, ReviewRepo reviewRepo, INotificationSender notificationSender) {
         this.accountRepo = accountRepo;
         this.auctionRepo = auctionRepo;
         this.bidRepo = bidRepo;
         this.reviewRepo = reviewRepo;
+        this.notificationSender = notificationSender;
     }
 
     @Override
@@ -50,6 +54,9 @@ public class ReviewService implements IReviewService {
             var reviewEntity = new ReviewEntity(true, reviewRequest.getRating(), reviewRequest.getText(), auctionEntity, auctionEntity.getSeller(), buyer);
 
             reviewRepo.saveAndFlush(reviewEntity);
+            if (buyer.isReceiveEmailWhenReviewed()) {
+                notificationSender.enqueueEmailNotification(new EmailNotification(buyer.getEmail(), "New review " + reviewEntity.getId()));
+            }
             return new Review(reviewEntity);
         }
 

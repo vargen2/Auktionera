@@ -33,4 +33,6 @@ public class AccountEntity {
     @Builder.Default
     private String city = StringUtils.EMPTY;
 
+    private boolean receiveEmailWhenReviewed;
+
 }

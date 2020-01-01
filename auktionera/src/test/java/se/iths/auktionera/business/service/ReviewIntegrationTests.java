@@ -74,7 +74,7 @@ public class ReviewIntegrationTests {
 
 
         IAuctionService auctionService = new AuctionService(accountRepo, auctionRepo, bidRepo, imageRepo);
-        reviewService = new ReviewService(accountRepo, auctionRepo, bidRepo, reviewRepo);
+        reviewService = new ReviewService(accountRepo, auctionRepo, bidRepo, reviewRepo, null);
 
         CreateAuctionRequest en_bra_stol = CreateAuctionRequest.builder()
                 .title("Stol")

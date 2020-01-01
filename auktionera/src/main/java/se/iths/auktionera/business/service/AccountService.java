@@ -38,7 +38,6 @@ public class AccountService implements IAccountService {
         Optional.ofNullable(updateAccountRequest.getPostNr()).ifPresent(acc::setPostNr);
         Optional.ofNullable(updateAccountRequest.getAnonymousBuyer()).ifPresent(acc::setAnonymousBuyer);
 
-        AccountEntity updated = accountRepo.saveAndFlush(acc);
-        return new Account(updated);
+        return new Account(accountRepo.saveAndFlush(acc));
     }
 }

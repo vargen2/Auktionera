@@ -80,7 +80,7 @@ public class UserIntegrationTests {
 
 
         IAuctionService auctionService = new AuctionService(accountRepo, auctionRepo, bidRepo, imageRepo);
-        IReviewService reviewService = new ReviewService(accountRepo, auctionRepo, bidRepo, reviewRepo);
+        IReviewService reviewService = new ReviewService(accountRepo, auctionRepo, bidRepo, reviewRepo, null);
         userService = new UserService(accountRepo, auctionRepo, bidRepo, reviewRepo);
 
         {

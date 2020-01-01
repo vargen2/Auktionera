@@ -16,6 +16,7 @@ jobs:
       uses: actions/setup-java@v1
       with:
         java-version: 11
+        working-directory: auktionera
     - name: Cache Maven archetypes
       uses: actions/cache@v1
       with:
@@ -23,5 +24,7 @@ jobs:
         key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
         restore-keys: |
             ${{ runner.os }}-maven-
+        working-directory: auktionera
     - name: Build with Maven
       run: mvn clean package
+      working-directory: auktionera

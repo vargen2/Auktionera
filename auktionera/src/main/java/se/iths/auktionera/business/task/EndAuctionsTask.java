@@ -5,10 +5,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import se.iths.auktionera.business.enums.AuctionState;
+import se.iths.auktionera.business.model.EmailNotification;
 import se.iths.auktionera.persistence.entity.AuctionEntity;
 import se.iths.auktionera.persistence.entity.BidEntity;
 import se.iths.auktionera.persistence.repo.AuctionRepo;
 import se.iths.auktionera.persistence.repo.BidRepo;
+import se.iths.auktionera.worker.INotificationSender;
 
 import java.time.Instant;
 import java.util.List;
@@ -22,12 +24,14 @@ public class EndAuctionsTask implements IEndAuctionsTask {
 
     private final AuctionRepo auctionRepo;
     private final BidRepo bidRepo;
+    private final INotificationSender notificationSender;
 
     private int counter;
 
-    public EndAuctionsTask(AuctionRepo auctionRepo, BidRepo bidRepo) {
+    public EndAuctionsTask(AuctionRepo auctionRepo, BidRepo bidRepo, INotificationSender notificationSender) {
         this.auctionRepo = auctionRepo;
         this.bidRepo = bidRepo;
+        this.notificationSender = notificationSender;
     }
 
     @Override
@@ -65,6 +69,14 @@ public class EndAuctionsTask implements IEndAuctionsTask {
                 BidEntity lastBid = bids.get(bids.size() - 1);
                 auction.setState(AuctionState.EndedBought);
                 auction.setBuyer(lastBid.getBidder());
+                if (lastBid.getBidder().isReceiveEmailWhenWon()) {
+                    notificationSender.enqueueEmailNotification(
+                            new EmailNotification(lastBid.getBidder().getEmail(), "You won auction " + auction.getId()));
+                }
+                if (auction.getSeller().isReceiveEmailWhenSold()) {
+                    notificationSender.enqueueEmailNotification(
+                            new EmailNotification(auction.getSeller().getEmail(), "Your auction sold " + auction.getId()));
+                }
             } else {
                 auction.setState(AuctionState.EndedNotBought);
             }

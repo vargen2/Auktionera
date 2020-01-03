@@ -137,6 +137,15 @@ public class AuctionService implements IAuctionService {
             auctionEntity.setEndedAt(Instant.now());
             auctionEntity.setBuyer(bidEntity.getBidder());
             auctionRepo.saveAndFlush(auctionEntity);
+            if (bidEntity.getBidder().isReceiveEmailWhenWon()) {
+                notificationSender.enqueueEmailNotification(
+                        new EmailNotification(bidEntity.getBidder().getEmail(),
+                                "You won auction " + auctionEntity.getId()));
+            }
+            if (auctionEntity.getSeller().isReceiveEmailWhenSold()) {
+                notificationSender.enqueueEmailNotification(
+                        new EmailNotification(auctionEntity.getSeller().getEmail(), "Your auction sold " + auctionEntity.getId()));
+            }
         }
 
         Instant tenMinutesIntoFuture = Instant.now().plus(10, ChronoUnit.MINUTES);

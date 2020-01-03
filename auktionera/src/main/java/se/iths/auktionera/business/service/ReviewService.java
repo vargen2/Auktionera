@@ -71,6 +71,9 @@ public class ReviewService implements IReviewService {
             Validate.isTrue(!reviewRepo.existsByAuction_IdAndBuyer_IdAndCreatedBySellerFalse(auctionEntity.getId(), buyer.getId()), "Review from buyer already exists.");
             var reviewEntity = new ReviewEntity(false, reviewRequest.getRating(), reviewRequest.getText(), auctionEntity, auctionEntity.getSeller(), buyer);
             reviewRepo.saveAndFlush(reviewEntity);
+            if (auctionEntity.getSeller().isReceiveEmailWhenReviewed()) {
+                notificationSender.enqueueEmailNotification(new EmailNotification(auctionEntity.getSeller().getEmail(), "New review " + reviewEntity.getId()));
+            }
             var review = new Review(reviewEntity);
             log.info("Review created: {}", review);
             return review;

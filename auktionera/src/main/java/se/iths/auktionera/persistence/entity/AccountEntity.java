@@ -35,5 +35,7 @@ public class AccountEntity {
 
     private boolean receiveEmailWhenReviewed;
     private boolean receiveEmailWhenOutbid;
+    private boolean receiveEmailWhenWon;
+    private boolean receiveEmailWhenSold;
 
 }

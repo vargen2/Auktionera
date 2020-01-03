@@ -8,8 +8,10 @@ import se.iths.auktionera.business.model.CreateAuctionRequest;
 import javax.persistence.*;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
+import java.util.HashSet;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -35,6 +37,13 @@ public class AuctionEntity {
             name = "buyer_id"
     )
     private AccountEntity buyer;
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "categories",
+            joinColumns = @JoinColumn(name = "auction_id"),
+            inverseJoinColumns = @JoinColumn(name = "category_id"))
+    Set<CategoryEntity> categories = new HashSet<>();
 
     private String title;
     private String description;

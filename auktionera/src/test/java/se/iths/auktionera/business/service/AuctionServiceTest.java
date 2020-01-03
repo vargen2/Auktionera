@@ -36,6 +36,8 @@ class AuctionServiceTest {
     ReviewRepo reviewRepo;
     @Autowired
     private ImageRepo imageRepo;
+    @Autowired
+    private CategoryRepo categoryRepo;
     @MockBean
     private INotificationSender notificationSender;
 
@@ -45,7 +47,7 @@ class AuctionServiceTest {
 
     @BeforeEach
     void setUp() {
-        auctionService = new AuctionService(accountRepo, auctionRepo, bidRepo, imageRepo, notificationSender);
+        auctionService = new AuctionService(accountRepo, auctionRepo, bidRepo, imageRepo, categoryRepo, notificationSender);
         accountEntity = AccountEntity.builder()
                 .id(10)
                 .anonymousBuyer(false)

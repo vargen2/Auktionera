@@ -1,5 +1,6 @@
 package se.iths.auktionera.business.service;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Validate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,18 +16,14 @@ import se.iths.auktionera.business.query.AuctionSort;
 import se.iths.auktionera.business.query.AuctionSpecification;
 import se.iths.auktionera.persistence.entity.AuctionEntity;
 import se.iths.auktionera.persistence.entity.BidEntity;
+import se.iths.auktionera.persistence.entity.CategoryEntity;
 import se.iths.auktionera.persistence.entity.ImageEntity;
-import se.iths.auktionera.persistence.repo.AccountRepo;
-import se.iths.auktionera.persistence.repo.AuctionRepo;
-import se.iths.auktionera.persistence.repo.BidRepo;
-import se.iths.auktionera.persistence.repo.ImageRepo;
+import se.iths.auktionera.persistence.repo.*;
 import se.iths.auktionera.worker.INotificationSender;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -38,13 +35,15 @@ public class AuctionService implements IAuctionService {
     private final AuctionRepo auctionRepo;
     private final BidRepo bidRepo;
     private final ImageRepo imageRepo;
+    private final CategoryRepo categoryRepo;
     private final INotificationSender notificationSender;
 
-    public AuctionService(AccountRepo accountRepo, AuctionRepo auctionRepo, BidRepo bidRepo, ImageRepo imageRepo, INotificationSender notificationSender) {
+    public AuctionService(AccountRepo accountRepo, AuctionRepo auctionRepo, BidRepo bidRepo, ImageRepo imageRepo, CategoryRepo categoryRepo, INotificationSender notificationSender) {
         this.accountRepo = accountRepo;
         this.auctionRepo = auctionRepo;
         this.bidRepo = bidRepo;
         this.imageRepo = imageRepo;
+        this.categoryRepo = categoryRepo;
         this.notificationSender = notificationSender;
     }
 
@@ -78,7 +77,12 @@ public class AuctionService implements IAuctionService {
             Validate.isTrue(entity.getAuction() == null, "Image already in use.");
         }
 
+        var categoryNames = getValidatedCategoryNames(auctionRequest.getCategories());
+        var categories = createOrGetCategories(categoryNames);
+
         var auctionEntity = new AuctionEntity(auctionRequest, seller);
+        auctionEntity.setCategories(categories);
+
         auctionRepo.saveAndFlush(auctionEntity);
 
         for (var entity : imageEntities) {
@@ -159,5 +163,28 @@ public class AuctionService implements IAuctionService {
         return auction;
     }
 
+    private Set<String> getValidatedCategoryNames(Set<String> names) {
+        if (names == null || names.isEmpty()) {
+            return Set.of();
+        }
+        return names.stream()
+                .filter(StringUtils::isNotBlank)
+                .map(String::trim)
+                .map(String::toLowerCase)
+                .collect(Collectors.toSet());
+    }
+
+    private Set<CategoryEntity> createOrGetCategories(Set<String> names) {
+        var categories = new HashSet<CategoryEntity>();
+        for (String name : names) {
+            var category = categoryRepo.findByTitle(name).orElseGet(() -> {
+                var c = categoryRepo.saveAndFlush(new CategoryEntity(name));
+                log.info("Category {} created.", name);
+                return c;
+            });
+            categories.add(category);
+        }
+        return categories;
+    }
 
 }

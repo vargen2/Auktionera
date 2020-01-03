@@ -10,10 +10,7 @@ import se.iths.auktionera.business.model.Auction;
 import se.iths.auktionera.business.model.CreateAuctionRequest;
 import se.iths.auktionera.business.model.CreateBidRequest;
 import se.iths.auktionera.persistence.entity.AccountEntity;
-import se.iths.auktionera.persistence.repo.AccountRepo;
-import se.iths.auktionera.persistence.repo.AuctionRepo;
-import se.iths.auktionera.persistence.repo.BidRepo;
-import se.iths.auktionera.persistence.repo.ImageRepo;
+import se.iths.auktionera.persistence.repo.*;
 import se.iths.auktionera.worker.INotificationSender;
 
 import javax.transaction.Transactional;
@@ -36,6 +33,8 @@ public class AuctionServiceIntegrationTests {
     private BidRepo bidRepo;
     @Autowired
     private ImageRepo imageRepo;
+    @Autowired
+    private CategoryRepo categoryRepo;
 
     @MockBean
     private INotificationSender notificationSender;
@@ -82,7 +81,7 @@ public class AuctionServiceIntegrationTests {
         accountRepo.saveAndFlush(accountEntity3);
 
 
-        auctionService = new AuctionService(accountRepo, auctionRepo, bidRepo, imageRepo, notificationSender);
+        auctionService = new AuctionService(accountRepo, auctionRepo, bidRepo, imageRepo, categoryRepo, notificationSender);
 
         CreateAuctionRequest en_bra_stol = CreateAuctionRequest.builder()
                 .title("Stol")

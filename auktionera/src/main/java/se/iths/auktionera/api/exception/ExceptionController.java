@@ -16,13 +16,13 @@ public class ExceptionController {
 
     @ExceptionHandler(value = IllegalArgumentException.class)
     public ResponseEntity<Object> exception(IllegalArgumentException exception) {
-        log.warn("Most likely validation error or multiple bids at same time.", exception);
+        log.debug("Most likely validation error or multiple bids at same time.", exception);
         return new ResponseEntity<>(exception.getMessage(), HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(value = NoSuchElementException.class)
     public ResponseEntity<Object> exception(NoSuchElementException exception) {
-        log.error("Big error. Look into this.", exception);
+        log.error("Look into this.", exception);
         return new ResponseEntity<>(exception.getMessage(), HttpStatus.NOT_FOUND);
     }
 }

@@ -11,6 +11,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.time.Instant;
 import java.util.List;
+import java.util.Set;
 
 @Getter
 @NoArgsConstructor
@@ -36,4 +37,6 @@ public class CreateAuctionRequest {
     private Integer buyoutPrice = null;
 
     private List<Long> imageIds;
+
+    private Set<String> categories;
 }

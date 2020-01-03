@@ -32,6 +32,8 @@ public class UserIntegrationTests {
     private ReviewRepo reviewRepo;
     @Autowired
     private ImageRepo imageRepo;
+    @Autowired
+    private CategoryRepo categoryRepo;
     @MockBean
     private INotificationSender notificationSender;
 
@@ -83,7 +85,7 @@ public class UserIntegrationTests {
         accountRepo.saveAndFlush(accountEntity3);
 
 
-        IAuctionService auctionService = new AuctionService(accountRepo, auctionRepo, bidRepo, imageRepo, notificationSender);
+        IAuctionService auctionService = new AuctionService(accountRepo, auctionRepo, bidRepo, imageRepo, categoryRepo, notificationSender);
         IReviewService reviewService = new ReviewService(accountRepo, auctionRepo, bidRepo, reviewRepo, null);
         userService = new UserService(accountRepo, auctionRepo, bidRepo, reviewRepo);
 

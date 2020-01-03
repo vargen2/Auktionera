@@ -30,6 +30,8 @@ public class ReviewIntegrationTests {
     private ReviewRepo reviewRepo;
     @Autowired
     private ImageRepo imageRepo;
+    @Autowired
+    private CategoryRepo categoryRepo;
     @MockBean
     private INotificationSender notificationSender;
 
@@ -77,7 +79,7 @@ public class ReviewIntegrationTests {
         accountRepo.saveAndFlush(accountEntity3);
 
 
-        IAuctionService auctionService = new AuctionService(accountRepo, auctionRepo, bidRepo, imageRepo, notificationSender);
+        IAuctionService auctionService = new AuctionService(accountRepo, auctionRepo, bidRepo, imageRepo, categoryRepo, notificationSender);
         reviewService = new ReviewService(accountRepo, auctionRepo, bidRepo, reviewRepo, null);
 
         CreateAuctionRequest en_bra_stol = CreateAuctionRequest.builder()

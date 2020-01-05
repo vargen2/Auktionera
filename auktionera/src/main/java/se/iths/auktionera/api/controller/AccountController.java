@@ -4,6 +4,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.view.RedirectView;
 import se.iths.auktionera.business.model.Account;
 import se.iths.auktionera.business.model.UpdateAccountRequest;
 import se.iths.auktionera.business.service.IAccountService;
@@ -21,8 +22,9 @@ public class AccountController {
     }
 
     @GetMapping("api/account")
-    public Account getAccount(HttpServletRequest request) {
-        return accountService.getAccount((String) request.getAttribute("authId"));
+    public RedirectView getAccount(HttpServletRequest request) {
+        //return accountService.getAccount((String) request.getAttribute("authId"));
+        return new RedirectView("http://localhost:8081");
     }
 
     @PatchMapping("api/account")

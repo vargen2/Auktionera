@@ -1,5 +1,6 @@
 package se.iths.auktionera.api.controller;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import se.iths.auktionera.business.model.Auction;
 import se.iths.auktionera.business.model.CreateAuctionRequest;
@@ -20,6 +21,7 @@ public class AuctionController {
         this.auctionService = auctionService;
     }
 
+    @PreAuthorize("permitAll()")
     @GetMapping("api/auctions")
     public List<Auction> getAuctions(@RequestParam Map<String, String> all) {
         return auctionService.getAuctions(all, all);

@@ -12,12 +12,15 @@ public class AuktioneraApplication {
         SpringApplication.run(AuktioneraApplication.class, args);
     }
 
+
 //    @Bean
 //    CorsConfigurationSource corsConfigurationSource() {
+//        System.out.println("hit hit");
 //        CorsConfiguration configuration = new CorsConfiguration();
-//        configuration.setAllowedOrigins(List.of("http://localhost:8080"));
+//        configuration.setAllowedOrigins(List.of("http://localhost:8081"));
 //        configuration.addAllowedHeader("*");
 //        configuration.addAllowedMethod("*");
+//
 //        configuration.setAllowCredentials(true);
 //        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
 //        source.registerCorsConfiguration("/**", configuration);

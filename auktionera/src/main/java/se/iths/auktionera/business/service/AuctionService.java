@@ -19,6 +19,7 @@ import se.iths.auktionera.persistence.entity.BidEntity;
 import se.iths.auktionera.persistence.entity.CategoryEntity;
 import se.iths.auktionera.persistence.entity.ImageEntity;
 import se.iths.auktionera.persistence.repo.*;
+import se.iths.auktionera.security.UserPrincipal;
 import se.iths.auktionera.worker.INotificationSender;
 
 import java.time.Instant;
@@ -67,8 +68,8 @@ public class AuctionService implements IAuctionService {
     }
 
     @Override
-    public Auction createAuction(String authId, CreateAuctionRequest auctionRequest) {
-        var seller = accountRepo.findByAuthId(authId).orElseThrow();
+    public Auction createAuction(UserPrincipal userPrincipal, CreateAuctionRequest auctionRequest) {
+        var seller = accountRepo.findById(userPrincipal.getId()).orElseThrow();
 
         List<ImageEntity> imageEntities = auctionRequest.getImageIds() != null ? imageRepo.findAllById(auctionRequest.getImageIds()) : List.of();
 

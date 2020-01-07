@@ -6,6 +6,8 @@ import se.iths.auktionera.business.model.Auction;
 import se.iths.auktionera.business.model.CreateAuctionRequest;
 import se.iths.auktionera.business.model.CreateBidRequest;
 import se.iths.auktionera.business.service.IAuctionService;
+import se.iths.auktionera.security.CurrentUser;
+import se.iths.auktionera.security.UserPrincipal;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
@@ -21,7 +23,6 @@ public class AuctionController {
         this.auctionService = auctionService;
     }
 
-    @PreAuthorize("permitAll()")
     @GetMapping("api/auctions")
     public List<Auction> getAuctions(@RequestParam Map<String, String> all) {
         return auctionService.getAuctions(all, all);
@@ -33,8 +34,9 @@ public class AuctionController {
     }
 
     @PostMapping("api/auctions")
-    public Auction createAuction(@Valid @RequestBody CreateAuctionRequest auctionRequest, HttpServletRequest request) {
-        return auctionService.createAuction((String) request.getAttribute("authId"), auctionRequest);
+    @PreAuthorize("hasRole('USER')")
+    public Auction createAuction(@Valid @RequestBody CreateAuctionRequest auctionRequest, @CurrentUser UserPrincipal userPrincipal) {
+        return auctionService.createAuction(userPrincipal, auctionRequest);
     }
 
     @PostMapping("api/auctions/bid")

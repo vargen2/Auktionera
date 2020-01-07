@@ -3,6 +3,7 @@ package se.iths.auktionera.business.service;
 import se.iths.auktionera.business.model.Auction;
 import se.iths.auktionera.business.model.CreateAuctionRequest;
 import se.iths.auktionera.business.model.CreateBidRequest;
+import se.iths.auktionera.security.UserPrincipal;
 
 import java.util.List;
 import java.util.Map;
@@ -12,7 +13,7 @@ public interface IAuctionService {
 
     Auction getAuction(long id);
 
-    Auction createAuction(String authId, CreateAuctionRequest auctionRequest);
+    Auction createAuction(UserPrincipal userPrincipal, CreateAuctionRequest auctionRequest);
 
     Auction createBid(String authId, CreateBidRequest bidRequest);
 

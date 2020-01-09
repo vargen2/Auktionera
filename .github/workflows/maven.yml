@@ -42,8 +42,8 @@ jobs:
           - Second Change
         draft: false
         prerelease: false
-    - name: aa
-      id: aa
+    - name: ls
+      id: ls
       working-directory: backend
       run: ls target
     - name: Upload Release Asset
@@ -52,9 +52,8 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        working-directory: backend  
         upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
-        asset_path: target/auktionera-0.0.1.jar
+        asset_path: ./backend/target/auktionera-0.0.1.jar
         asset_name: auktionera-0.0.1.jar
         asset_content_type: application/zip
         

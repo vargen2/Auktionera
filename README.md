@@ -10,7 +10,7 @@ Frontend made with javascript framework Vue.js, Vue-cli and Vuetify.
 
 ## Instructions to run on localhost
 
-### 1. Preperations
+### 1. Preparations
 
 - Java 11
 - Maven

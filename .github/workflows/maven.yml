@@ -26,5 +26,5 @@ jobs:
             ${{ runner.os }}-maven-
         working-directory: backend
     - name: Build with Maven
-      run: mvn clean package -Dmaven.test.skip=true
+      run: mvn clean package
       working-directory: backend

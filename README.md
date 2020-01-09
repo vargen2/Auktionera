@@ -27,7 +27,7 @@ Frontend made with javascript framework Vue.js, Vue-cli and Vuetify.
 
 localhost:8080
 
-	/auktionera
+	/backend
 
 Test
 

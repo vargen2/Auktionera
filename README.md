@@ -4,7 +4,7 @@
 
 Project I made in a course at ITHS called complex Java 18. 
 
-Backend "rest-api" made with Spring boot, MySQL and RabbitMQ. Autehntiaction with "social login", OAuth2 and JWT.
+Backend "rest-api" made with Spring boot, MySQL and RabbitMQ. Authentiaction with "social login", OAuth2 and JWT.
 
 Frontend made with javascript framework Vue.js, Vue-cli and Vuetify.
 

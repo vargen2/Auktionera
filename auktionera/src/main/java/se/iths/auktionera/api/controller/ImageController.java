@@ -1,13 +1,15 @@
 package se.iths.auktionera.api.controller;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import se.iths.auktionera.business.model.CreateImageRequest;
 import se.iths.auktionera.business.model.Image;
 import se.iths.auktionera.business.service.IImageService;
+import se.iths.auktionera.security.CurrentUser;
+import se.iths.auktionera.security.UserPrincipal;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 @RestController
@@ -20,7 +22,8 @@ public class ImageController {
     }
 
     @PostMapping
-    public Image createImage(@Valid @RequestBody CreateImageRequest imageRequest, HttpServletRequest request) {
-        return imageService.createImage((String) request.getAttribute("authId"), imageRequest.getUrl());
+    @PreAuthorize("hasRole('USER')")
+    public Image createImage(@Valid @RequestBody CreateImageRequest imageRequest, @CurrentUser UserPrincipal userPrincipal) {
+        return imageService.createImage(userPrincipal, imageRequest.getUrl());
     }
 }

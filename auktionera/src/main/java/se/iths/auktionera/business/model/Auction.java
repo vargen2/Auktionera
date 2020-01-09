@@ -44,6 +44,7 @@ public class Auction {
         this.startPrice = auctionEntity.getStartPrice();
         this.endsAt = auctionEntity.getEndsAt();
         this.state = auctionEntity.getState();
+        this.currentBid = auctionEntity.getCurrentBid();
         this.categories = auctionEntity.getCategories() == null ? Set.of() : auctionEntity.getCategories().stream().map(Category::new).collect(Collectors.toSet());
     }
 

@@ -20,9 +20,6 @@ public class AccountEntity {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
 
-    @Column(unique = true, nullable = true, updatable = false)
-    private String authId = "";
-
     @NotNull
     @Enumerated(EnumType.STRING)
     private AuthProvider provider;

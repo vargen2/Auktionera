@@ -15,6 +15,6 @@ public interface IAuctionService {
 
     Auction createAuction(UserPrincipal userPrincipal, CreateAuctionRequest auctionRequest);
 
-    Auction createBid(String authId, CreateBidRequest bidRequest);
+    Auction createBid(UserPrincipal userPrincipal, CreateBidRequest bidRequest);
 
 }

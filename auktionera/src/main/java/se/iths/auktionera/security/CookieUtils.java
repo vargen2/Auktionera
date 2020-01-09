@@ -1,4 +1,4 @@
-package se.iths.auktionera.util;
+package se.iths.auktionera.security;
 
 import org.springframework.util.SerializationUtils;
 

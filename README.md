@@ -2,19 +2,55 @@
 
 ![](https://github.com/vargen2/Auktionera/workflows/Java%20CI/badge.svg)
 
+Project I made in a course at ITHS called complex Java 18. 
 
-## Instructions
+Backend "rest-api" made with Spring boot, MySQL and RabbitMQ. Autehntiaction with "social login", OAuth2 and JWT.
 
-In application.yml use this to disable security. Will be authed as "TestUser"
-```yml
-spring:
-  profiles:
-    active: noSecurity
-```
+Frontend made with javascript framework Vue.js, Vue-cli and Vuetify.
 
-In application.yml use this to enable security.
-```yml
-spring:
-  profiles:
-    active: 
-```
+## Instructions to run on localhost
+
+### 1. Preperations
+
+- Java 11
+- Maven
+- MySQL installed on localhost
+	- port: 3306
+   	- username: root
+   	- password: root
+- RabbitMQ installed on localhost
+	- https://www.rabbitmq.com/download.html
+- Node.js
+	- https://nodejs.org/en/
+
+### 2. Backend
+
+localhost:8080
+
+	/auktionera
+
+Test
+
+	mvn surefire:test
+
+Run
+
+	mvn spring-boot:run
+
+
+### 3. Frontend
+
+localhost:8081
+
+	/frontend
+
+Run
+
+	npm install
+	npm run serve
+
+## Help from
+
+https://www.callicoder.com/spring-boot-security-oauth2-social-login-part-1/
+
+https://github.com/callicoder/spring-boot-react-oauth2-social-login-demo

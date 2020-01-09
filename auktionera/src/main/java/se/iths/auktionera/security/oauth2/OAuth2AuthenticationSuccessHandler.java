@@ -7,8 +7,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.util.UriComponentsBuilder;
 import se.iths.auktionera.config.AppProperties;
 import se.iths.auktionera.exception.BadRequestException;
+import se.iths.auktionera.security.CookieUtils;
 import se.iths.auktionera.security.TokenProvider;
-import se.iths.auktionera.util.CookieUtils;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.Cookie;

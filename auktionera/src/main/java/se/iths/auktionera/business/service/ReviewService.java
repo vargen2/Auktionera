@@ -14,6 +14,7 @@ import se.iths.auktionera.persistence.repo.AccountRepo;
 import se.iths.auktionera.persistence.repo.AuctionRepo;
 import se.iths.auktionera.persistence.repo.BidRepo;
 import se.iths.auktionera.persistence.repo.ReviewRepo;
+import se.iths.auktionera.security.UserPrincipal;
 import se.iths.auktionera.worker.INotificationSender;
 
 import java.util.Objects;
@@ -38,10 +39,10 @@ public class ReviewService implements IReviewService {
     }
 
     @Override
-    public Review createReview(String authId, CreateReviewRequest reviewRequest) {
+    public Review createReview(UserPrincipal userPrincipal, CreateReviewRequest reviewRequest) {
         Objects.requireNonNull(reviewRequest);
 
-        var creator = accountRepo.findByAuthId(authId).orElseThrow();
+        var creator = accountRepo.findById(userPrincipal.getId()).orElseThrow();
         var auctionEntity = auctionRepo.findById(reviewRequest.getAuctionId()).orElseThrow();
 
         Validate.isTrue(auctionEntity.getState() == AuctionState.EndedBought || auctionEntity.getState() == AuctionState.EndedWithBuyout, "Auction not bought.");

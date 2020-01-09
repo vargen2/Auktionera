@@ -4,6 +4,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import se.iths.auktionera.business.enums.AuthProvider;
 import se.iths.auktionera.persistence.entity.AccountEntity;
 import se.iths.auktionera.persistence.entity.AuctionEntity;
 
@@ -28,7 +29,8 @@ class AuctionRepoTest {
     void setUp() {
         AccountEntity accountEntity = AccountEntity.builder()
                 .anonymousBuyer(false)
-                .authId("User")
+                .provider(AuthProvider.google)
+                .providerId("1")
                 .city("City")
                 .email("name@example.com")
                 .postNr(12345)

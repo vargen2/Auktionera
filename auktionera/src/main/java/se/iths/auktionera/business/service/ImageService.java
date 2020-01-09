@@ -4,8 +4,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import se.iths.auktionera.business.model.Image;
+import se.iths.auktionera.persistence.entity.ImageEntity;
 import se.iths.auktionera.persistence.repo.AccountRepo;
 import se.iths.auktionera.persistence.repo.ImageRepo;
+import se.iths.auktionera.security.UserPrincipal;
 
 @Service
 public class ImageService implements IImageService {
@@ -21,12 +23,11 @@ public class ImageService implements IImageService {
     }
 
     @Override
-    public Image createImage(String authId, String url) {
-        return null;
-//        var creator = accountRepo.findByAuthId(authId).orElseThrow();
-//        var imageEntity = new ImageEntity(url, creator);
-//        var image = new Image(imageRepo.saveAndFlush(imageEntity));
-//        log.info("Image created: {}", image);
-//        return image;
+    public Image createImage(UserPrincipal userPrincipal, String url) {
+        var creator = accountRepo.findById(userPrincipal.getId()).orElseThrow();
+        var imageEntity = new ImageEntity(url, creator);
+        var image = new Image(imageRepo.saveAndFlush(imageEntity));
+        log.info("Image created: {}", image);
+        return image;
     }
 }

@@ -98,11 +98,11 @@ public class AuctionService implements IAuctionService {
     }
 
     @Override
-    public Auction createBid(String authId, CreateBidRequest bidRequest) {
+    public Auction createBid(UserPrincipal userPrincipal, CreateBidRequest bidRequest) {
         Objects.requireNonNull(bidRequest);
         Validate.isTrue(bidRequest.getBidPrice() > bidRequest.getCurrentPrice(), "Bid has to be greater than current price.");
 
-        var bidder = accountRepo.findByAuthId(authId).orElseThrow();
+        var bidder = accountRepo.findById(userPrincipal.getId()).orElseThrow();
         var auctionEntity = auctionRepo.findById(bidRequest.getAuctionId()).orElseThrow();
         Validate.isTrue(auctionEntity.getState() == AuctionState.InProgress, "Auction ended.");
         Validate.isTrue(bidder.getId() != auctionEntity.getSeller().getId(), "Bidder can't be same as Seller.");
@@ -127,6 +127,8 @@ public class AuctionService implements IAuctionService {
         BidEntity bidEntity = new BidEntity(previousBidId, bidRequest, auctionEntity, bidder);
         bidRepo.saveAndFlush(bidEntity);
 
+        auctionEntity.setCurrentBid(bidEntity.getBidPrice());
+        auctionRepo.saveAndFlush(auctionEntity);
 
         if (previousBids.size() > 0) {
             var lastBid = previousBids.get(previousBids.size() - 1);
@@ -137,11 +139,13 @@ public class AuctionService implements IAuctionService {
             }
         }
 
+        boolean boughtOut = false;
         if (auctionEntity.getBuyoutPrice() > 0 && bidEntity.getBidPrice() >= auctionEntity.getBuyoutPrice()) {
             auctionEntity.setState(AuctionState.EndedWithBuyout);
             auctionEntity.setEndedAt(Instant.now());
             auctionEntity.setBuyer(bidEntity.getBidder());
             auctionRepo.saveAndFlush(auctionEntity);
+            boughtOut = true;
             if (bidEntity.getBidder().isReceiveEmailWhenWon()) {
                 notificationSender.enqueueEmailNotification(
                         new EmailNotification(bidEntity.getBidder().getEmail(),
@@ -160,7 +164,12 @@ public class AuctionService implements IAuctionService {
         }
 
         var auction = new Auction(auctionEntity, bidEntity);
-        log.info("Bid created: {}", auction);
+        if (boughtOut) {
+            log.info("Bid created with buyout: {}", auction);
+        } else {
+            log.info("Bid created: {}", auction);
+        }
+
         return auction;
     }
 

@@ -9,7 +9,6 @@ import se.iths.auktionera.business.service.IAuctionService;
 import se.iths.auktionera.security.CurrentUser;
 import se.iths.auktionera.security.UserPrincipal;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.List;
 import java.util.Map;
@@ -40,8 +39,9 @@ public class AuctionController {
     }
 
     @PostMapping("api/auctions/bid")
-    public Auction createBid(@Valid @RequestBody CreateBidRequest bidRequest, HttpServletRequest request) {
-        return auctionService.createBid((String) request.getAttribute("authId"), bidRequest);
+    @PreAuthorize("hasRole('USER')")
+    public Auction createBid(@Valid @RequestBody CreateBidRequest bidRequest, @CurrentUser UserPrincipal userPrincipal) {
+        return auctionService.createBid(userPrincipal, bidRequest);
     }
 
 

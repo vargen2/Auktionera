@@ -14,7 +14,7 @@ import java.util.Objects;
 @AllArgsConstructor
 @Builder
 @Table(uniqueConstraints =
-@UniqueConstraint(columnNames = {"bidder_id", "previousBidId"}))
+@UniqueConstraint(columnNames = {"auction_id", "bidder_id", "previousBidId"}))
 public class BidEntity {
 
     @Id

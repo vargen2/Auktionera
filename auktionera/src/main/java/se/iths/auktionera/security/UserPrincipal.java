@@ -19,7 +19,6 @@ public class UserPrincipal implements OAuth2User, UserDetails {
     private Map<String, Object> attributes;
 
     public UserPrincipal(Long id, String email, String password, Collection<? extends GrantedAuthority> authorities) {
-        System.out.println("userprincipal construc");
         this.id = id;
         this.email = email;
         this.password = password;

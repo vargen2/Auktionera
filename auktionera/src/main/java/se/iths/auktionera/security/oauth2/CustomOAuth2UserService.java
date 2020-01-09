@@ -2,6 +2,8 @@ package se.iths.auktionera.security.oauth2;
 
 
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
@@ -10,6 +12,8 @@ import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 import se.iths.auktionera.business.enums.AuthProvider;
+import se.iths.auktionera.business.model.Account;
+import se.iths.auktionera.business.service.AccountService;
 import se.iths.auktionera.exception.OAuth2AuthenticationProcessingException;
 import se.iths.auktionera.persistence.entity.AccountEntity;
 import se.iths.auktionera.persistence.repo.AccountRepo;
@@ -21,6 +25,8 @@ import java.util.Optional;
 
 @Service
 public class CustomOAuth2UserService extends DefaultOAuth2UserService {
+
+    private static final Logger log = LoggerFactory.getLogger(AccountService.class);
 
     private final AccountRepo accountRepo;
 
@@ -57,9 +63,10 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
                         accountEntity.getProvider() + " account. Please use your " + accountEntity.getProvider() +
                         " account to login.");
             }
-            accountEntity = updateExistingUser(accountEntity, oAuth2UserInfo);
+            log.info("Account login {}", new Account(accountEntity));
         } else {
             accountEntity = registerNewUser(oAuth2UserRequest, oAuth2UserInfo);
+            log.info("Account created {}", new Account(accountEntity));
         }
 
         return UserPrincipal.create(accountEntity, oAuth2User.getAttributes());
@@ -76,10 +83,5 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         return accountRepo.save(accountEntity);
     }
 
-    private AccountEntity updateExistingUser(AccountEntity existingUser, OAuth2UserInfo oAuth2UserInfo) {
-        existingUser.setUserName(oAuth2UserInfo.getName());
-
-        return accountRepo.save(existingUser);
-    }
 
 }

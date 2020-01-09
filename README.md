@@ -1,6 +1,7 @@
-# Auktionera
-
 ![](https://github.com/vargen2/Auktionera/workflows/Java%20CI/badge.svg)
+![](https://github.com/vargen2/Auktionera/workflows/Create%20Release/badge.svg)
+
+# Auktionera
 
 Project I made in a course at ITHS called complex Java 18. 
 

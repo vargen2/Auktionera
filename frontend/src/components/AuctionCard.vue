@@ -3,7 +3,6 @@
     <v-card-title>{{ auction.title }}</v-card-title>
     <v-card-text
       ><p class="text--primary">{{ auction.description }}</p>
-      <p class="text--primary">Price: {{ currentBid }}</p>
     </v-card-text>
 
     <v-card-actions class="pa-4 pt-0">
@@ -13,6 +12,12 @@
         <v-btn text>reviews</v-btn>
       </v-row>
     </v-card-actions>
+    <v-card-text class="pt-0">
+      <v-row align="center" no-gutters>
+        <span class="text--primary">Price: {{ currentBid }}</span>
+        <v-btn text>Bids</v-btn>
+      </v-row>
+    </v-card-text>
     <v-card-actions v-if="auction.state === 'InProgress'" class="pa-4 pt-0">
       <v-row align="start" no-gutters>
         <v-text-field
@@ -37,14 +42,17 @@
 import { postBid } from '@/js/ajax'
 export default {
   props: {
-    auction: { type: Object, required: true },
+    auctionprop: { type: Object, required: true },
     user: { type: Object, required: false }
   },
   data() {
     return {
+      auction: this.auctionprop,
       isBidding: false,
       isBuyout: false,
-      bidPrice: Math.ceil((this.auction.currentBid === 0 ? this.auction.startPrice : this.auction.currentBid) * 1.1)
+      bidPrice: Math.ceil(
+        (this.auctionprop.currentBid === 0 ? this.auctionprop.startPrice : this.auctionprop.currentBid) * 1.1
+      )
     }
   },
   computed: {
@@ -73,7 +81,11 @@ export default {
         auctionId: this.auction.id
       }
       try {
-        await postBid(payLoad)
+        const response = await postBid(payLoad)
+        this.auction = response
+        this.bidPrice = Math.ceil(
+          (this.auction.currentBid === 0 ? this.auction.startPrice : this.auction.currentBid) * 1.1
+        )
       } catch (error) {
         console.log(error)
       }
@@ -90,7 +102,11 @@ export default {
         auctionId: this.auction.id
       }
       try {
-        await postBid(payLoad)
+        const response = await postBid(payLoad)
+        this.auction = response
+        this.bidPrice = Math.ceil(
+          (this.auction.currentBid === 0 ? this.auction.startPrice : this.auction.currentBid) * 1.1
+        )
       } catch (error) {
         console.log(error)
       }
@@ -102,6 +118,6 @@ export default {
 
 <style>
 .bid-input {
-  max-width: 80px;
+  max-width: 120px;
 }
 </style>

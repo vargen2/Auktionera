@@ -115,7 +115,6 @@ public class AuctionService implements IAuctionService {
         long previousBidId = 0;
         if (previousBids.size() > 0) {
             BidEntity lastBid = previousBids.get(previousBids.size() - 1);
-            Validate.isTrue(bidder.getId() != lastBid.getBidder().getId(), "Bidder can't bid on own bid.");
             Validate.isTrue(bidRequest.getCurrentPrice() == lastBid.getBidPrice(), "Bid request current price don't match latest bid.");
             Validate.isTrue(bidRequest.getBidPrice() >= lastBid.getBidPrice() * 1.05, "Bid to low.");
             previousBidId = lastBid.getId();

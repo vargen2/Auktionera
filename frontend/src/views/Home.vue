@@ -10,7 +10,13 @@
     </v-row>
     <v-row>
       <v-col cols="12" :md="8">
-        <auction-card v-for="auction in auctions" :key="auction.id" :auction="auction" :user="getUser" class="mb-4" />
+        <auction-card
+          v-for="auction in auctions"
+          :key="auction.id"
+          :auctionprop="auction"
+          :user="getUser"
+          class="mb-4"
+        />
       </v-col>
     </v-row>
   </v-container>

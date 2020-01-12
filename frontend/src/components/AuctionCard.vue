@@ -1,9 +1,7 @@
 <template>
   <v-card class="mb-4">
-    <v-card-title >{{ auction.title }}</v-card-title>
+    <v-card-title>{{ auction.title }}</v-card-title>
     <v-card-text>
-     
-
       <div class="text--primary">{{ auction.description }}</div>
       <div class="text--primary pt-2">End date: {{ auction.endsAt }}</div>
     </v-card-text>

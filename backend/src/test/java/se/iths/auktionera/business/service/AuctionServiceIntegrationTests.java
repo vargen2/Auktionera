@@ -177,23 +177,7 @@ public class AuctionServiceIntegrationTests {
         }
     }
 
-    @Test
-    void createBids_FailSameBidder() {
-        Auction first = auctionService.getAuctions(null, null).stream().findFirst().get();
 
-        {
-            CreateBidRequest createBidRequest = CreateBidRequest.builder().auctionId(first.getId()).currentPrice(first.getStartPrice()).bidPrice(2000).build();
-
-            Auction auction = auctionService.createBid(userPrincipal2, createBidRequest);
-
-            assertEquals(2000, auction.getCurrentBid());
-        }
-        {
-            CreateBidRequest createBidRequest = CreateBidRequest.builder().auctionId(first.getId()).currentPrice(2000).bidPrice(3000).build();
-            assertThrows(IllegalArgumentException.class, () -> auctionService.createBid(userPrincipal2, createBidRequest));
-
-        }
-    }
 
 //    @Test
 //    void createBid_FailWhenBidderNotFound() {

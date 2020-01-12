@@ -35,7 +35,6 @@ public class AccountService implements IAccountService {
         AccountEntity acc = accountRepo.findById(userPrincipal.getId()).orElseThrow();
 
         Optional.ofNullable(updateAccountRequest.getUserName()).ifPresent(acc::setUserName);
-        Optional.ofNullable(updateAccountRequest.getEmail()).ifPresent(acc::setEmail);
         Optional.ofNullable(updateAccountRequest.getStreetName()).ifPresent(acc::setStreetName);
         Optional.ofNullable(updateAccountRequest.getCity()).ifPresent(acc::setCity);
         Optional.ofNullable(updateAccountRequest.getPostNr()).ifPresent(acc::setPostNr);

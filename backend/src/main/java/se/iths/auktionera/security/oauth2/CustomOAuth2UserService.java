@@ -21,6 +21,7 @@ import se.iths.auktionera.security.UserPrincipal;
 import se.iths.auktionera.security.oauth2.user.OAuth2UserInfo;
 import se.iths.auktionera.security.oauth2.user.OAuth2UserInfoFactory;
 
+import java.time.Instant;
 import java.util.Optional;
 
 @Service
@@ -79,6 +80,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         accountEntity.setProviderId(oAuth2UserInfo.getId());
         accountEntity.setUserName(oAuth2UserInfo.getName());
         accountEntity.setEmail(oAuth2UserInfo.getEmail());
+        accountEntity.setCreatedAt(Instant.now());
 
         return accountRepo.save(accountEntity);
     }

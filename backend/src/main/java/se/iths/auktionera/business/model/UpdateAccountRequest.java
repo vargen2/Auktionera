@@ -5,16 +5,11 @@ import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Validate;
 
-import javax.validation.constraints.Email;
-
 @Getter
 @NoArgsConstructor
 public class UpdateAccountRequest {
 
     private String userName = null;
-
-    @Email
-    private String email = null;
 
     private String streetName = null;
 

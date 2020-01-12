@@ -29,7 +29,10 @@ Frontend made with javascript framework Vue.js, Vue-cli and Vuetify.
 
 ### 2. Backend
 
-Swagger: http://localhost:8080/swagger-ui.html
+Swagger
+- http://localhost:8080/swagger-ui.html
+- http://localhost:8080/v2/api-docs
+	- import url for insomnia/postman
 
 localhost:8080
 

@@ -19,8 +19,11 @@ Frontend made with javascript framework Vue.js, Vue-cli and Vuetify.
 	- port: 3306
    	- username: root
    	- password: root
+	- db: auktionera
+
 - RabbitMQ installed on localhost
 	- https://www.rabbitmq.com/download.html
+
 - Node.js
 	- https://nodejs.org/en/
 

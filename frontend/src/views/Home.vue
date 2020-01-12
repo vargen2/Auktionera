@@ -1,13 +1,13 @@
 <template>
   <v-container>
-    <v-row>
+    <!-- <v-row>
       <v-col cols="12" :md="8">
         <v-row no-gutters>
           <v-text-field class="mr-4" solo placeholder="search"></v-text-field>
           <v-btn height="48">Search</v-btn>
         </v-row>
       </v-col>
-    </v-row>
+    </v-row> -->
     <v-row>
       <v-col cols="12" :md="8">
         <auction-card

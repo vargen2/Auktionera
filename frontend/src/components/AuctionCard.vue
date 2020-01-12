@@ -1,8 +1,11 @@
 <template>
   <v-card class="mb-4">
-    <v-card-title>{{ auction.title }}</v-card-title>
-    <v-card-text
-      ><p class="text--primary">{{ auction.description }}</p>
+    <v-card-title >{{ auction.title }}</v-card-title>
+    <v-card-text>
+     
+
+      <div class="text--primary">{{ auction.description }}</div>
+      <div class="text--primary pt-2">End date: {{ auction.endsAt }}</div>
     </v-card-text>
 
     <v-card-actions class="pa-4 pt-0">
@@ -14,6 +17,14 @@
     </v-card-actions>
     <v-card-text class="pt-0">
       <v-row align="center" no-gutters>
+        <span class="mr-2">
+          <v-chip v-if="auction.state === 'InProgress'" small color="success" text-color="white">
+            Active
+          </v-chip>
+          <v-chip v-else color="error" small text-color="white">
+            Ended
+          </v-chip>
+        </span>
         <span class="text--primary">Price: {{ currentBid }}</span>
         <v-btn text>Bids</v-btn>
       </v-row>
